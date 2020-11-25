@@ -1,0 +1,14 @@
+image: node:lts-alpine
+
+stages:
+  - test
+
+test:
+  stage: test
+  script:
+    - npm install
+    - npm test
+  cache:
+    key: "$CI_PROJECT_ID"
+    paths:
+      - server/node_modules/
