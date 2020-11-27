@@ -4,8 +4,6 @@ const capture = {
 		this.listener();
 	},
 
-	
-<<<<<<< HEAD
 	listener(){
 		var myself = this;
 		chrome.webRequest.onResponseStarted.addListener(function(response){
@@ -96,10 +94,6 @@ const capture = {
 		});
 
 	}
-}
-=======
-	
 };
->>>>>>> develop
 
 capture.init();
