@@ -4,11 +4,32 @@
   "version": "0.0.1",
 
   "description": "Cross browser (PETs) extension for private information tracing across websites",
+	"content_scripts": [
+		{
+			"matches": ["<all_urls>"],
+			"js": ["js/content.js"]
+		}
+	],
+	"permissions": [
+		"<all_urls>",
+		"tabs",
+		"cookies",
+    	"storage",
+    	"downloads",
+    	"privacy",
+    	"webRequest",
+    	"webRequestBlocking"
+	],
 
-  "background": {
-    "scripts": [
-      "background/main.js"
-    ]
-  }
+	"browser_action": {},
+
+
+	"background": {
+		"scripts": [
+			"js/background.js",
+			"js/capture.js",
+			"js/store.js"
+		]
+	}
 
 }
