@@ -15,11 +15,6 @@ const capture = {
     	if(response.tabId >=0){
     		var cookieList = document.getElementById('cookie-list');
     		let urlResponse = response.url;
-    		console.log("ciaoooo" +response.initiator);
-    		const messaggio = {
-    			"testo": "iniziatore",
-    			"msg": response.url,
-    		};
     		chrome.tabs.get(response.tabId, (tab) =>{
     			if(tab.url !== urlResponse){ //escludo il sito di prima parte considerato in seguito
 	    			chrome.cookies.getAll({url: urlResponse}, function(cookies){	
@@ -42,14 +37,15 @@ const capture = {
 	chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
 		let urlTab = tab.url;
 		chrome.cookies.getAll({url: urlTab}, function(cookies){
-			//if(tab.url === response.url){
 			    const details = {
 			    	"type" : 'firstParty',
 			    	"data" : {tabId, changeInfo, tab},
 			    	"cookies" : (cookies.length>0) ? cookies : ''
 			    };
-			//}
+			myself.setParty(details);
+
 		});
+
     });
 
 	},
@@ -57,40 +53,49 @@ const capture = {
 	async setParty(event){
 		var myself = this;
 		let data = event.data;
-		let cookies = event.cookies;
+		let cookies = (event.cookies) ? event.cookies : '';
+		let tabId = ((data.tabId) ? data.tabId : data.response.tabId);
 		var party = {};
-		chrome.tabs.get(data.tabId, (tab) =>{
+
+
+		chrome.tabs.get(tabId, (tab) =>{
+			let urlTab = '';
 			switch(event.type){
 				case 'thirdParty':
-					if(data.url && data.initiator){
-						const urlTarget = new URL(data.url);
+					urlTab = new URL(tab.url);
+					const urlTarget = new URL(data.url);
+
+					if(data.url && data.initiator && !(urlTarget.hostname.includes(urlTab.hostname))){
 						const urlOrigin = new URL(data.initiator);
 						const urlFirstparty = new URL(tab.url);
-						const party = {
-							"hostname": urlFirstparty.hostname,
-							"target" : urlTarget,
-							"origin" : urlOrigin,
+						party = {
+							//"hostname": urlFirstparty.hostname,
+							"target" : urlTarget.hostname,
+							"origin" : urlOrigin.hostname,
 							"requestTime" : data.timeStamp,
 							"firstParty" : false,
-							"cookies" : (cookies.length>0) ? cookies : ''
+							"cookiesThirdParty" : (cookies.length>0) ? cookies : ''
 						};
+						store.storeParty(party);
+
 					}
 				break;
 				case 'firstParty':
-					const urlTab = new URL(tab.url);
+					urlTab = new URL(tab.url);
 					if(urlTab.hostname && tab.status === 'complete'){
-						const party = {
+						party = {
 							"hostname": urlTab.hostname,
 							"iconURL" : tab.favIconUrl,
 							"firstParty" : true,
 							"requestTime" : Date.now(),
-							"cookies" : cookies
+							"cookiesFirstParty" : (cookies.length>0) ? cookies : ''
 						};
-					}
+						store.storeParty(party);
 
+					}
 				break;
+
 			}
-			store.storeParty(party.hostname,party);
 		});
 
 	}
