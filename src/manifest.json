@@ -24,12 +24,16 @@
 	"browser_action": {},
 
 
-	"background": {
+	/*"background": {
 		"scripts": [
 			"js/store.js",
 			"js/capture.js",
 			"js/background.js"
 		]
-	}
+	}*/
+	"background": {
+    	"page": "background.html"
+  	},
+  	"content_security_policy": "script-src 'self' https://unpkg.com/dexie@latest/dist/dexie.js; object-src 'self'"
 
 }

@@ -1,3 +1,6 @@
+//import Dexie from dexie
+
+//import Dexie from 'dexie';
 const store = {
 
 	db:null,
@@ -15,20 +18,29 @@ const store = {
 	},
 
 
+
+	createDB(){
+		this.db = new Dexie('db_siti_cookie');
+		this.db.version(1).stores({
+			websites: "hostname"
+		});
+		this.db.open();
+	},
+
 	async setWebsite(hostname, party){
 
 	},
 
 	async storeParty(hostname, party){
 
-		notPresent = this.isNotPresent(hostname);
+		notPresent = await this.isNotPresent(hostname);
 		var website = {};
 
 		if(party !== undefined){
 			switch(party.firstParty){
 				case true:
 					if(notPresent){
-						let firstParty = await setWebsite(hostname, party);
+						//let firstParty = await setWebsite(hostname, party);
 
 						for(let key in party){
 							if(key === 'cookiesFirstParty'){
@@ -41,6 +53,8 @@ const store = {
 						
 
 					}
+					//TODO ELSE
+					document.getElementById('pp').innerHTML+=website;
 
 				break;
 				case false: 
@@ -49,20 +63,8 @@ const store = {
 				break;
 			}
 		}
-
-
-		if(present){
-
-		}
-	},
-
-	createDB(){
-		this.db = new Dexie('db_siti_cookie');
-		this.db.version(1).stores({
-			websites: "hostname"
-		});
-		this.db.open();
 	}
+
 };
 
 store.init();
