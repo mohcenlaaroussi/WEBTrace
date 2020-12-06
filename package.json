@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "cookie tracing",
   "main": "background.js",
-  "type": "module",
   "scripts": {
     "test": "mocha"
   },
@@ -26,4 +25,3 @@
     "dexie": "^3.0.3"
   }
 }
-
