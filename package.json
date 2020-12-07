@@ -15,13 +15,11 @@
     "cookies",
     "privacy"
   ],
-  "devDependencies": {
-    "mocha": "^8.2.1"
-  },
+  "devDependencies": {},
   "bugs": {
     "url": "https://gitlab.com/LaSER_lab/lighthouse/issues"
   },
   "dependencies": {
-    "dexie": "^3.0.3"
+    "mocha": "^8.2.1"
   }
 }
