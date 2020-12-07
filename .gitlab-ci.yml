@@ -7,8 +7,7 @@ test:
   stage: test
   script:
     - npm install
-    - npm install mocha
-    - npm test
+    - npm run test
   cache:
     key: "$CI_PROJECT_ID"
     paths:
