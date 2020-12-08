@@ -17,10 +17,12 @@ async function apri() {
     	console.log(bool);
 	  const tabprova = bool;
 	  if (!tabprova) {
+	    chrome.tabs.create({ url: 'index.html' });
 	  } else if (!tabprova.active) {
 	    chrome.tabs.update(tabprova.id, {active: true});
 	  }
     }
+    
     return boolean || false
   }
 
