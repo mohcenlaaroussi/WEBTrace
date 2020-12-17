@@ -115069,24 +115069,69 @@ function extend() {
 			}
 		}
 	}
+
+	async function getBaseUrl(url){
+		var pathArray = url.split( '/' );
+		var protocol = pathArray[0];
+		var host = pathArray[2];
+		var url = protocol + '//' + host;
+		return url;
+	}
+
 	async function setCategory(obj){
 		category.push(obj);
 	}
+
+	async function getCategory(title,description,keywords,baseUrl){
+		var string = "empty";
+		//TODO TRADUZIONE TESTO
+		string += title +' '+description+' '+keywords.toString();
+			var xhttp = new XMLHttpRequest();
+		  	xhttp.onreadystatechange = async function() {
+		  		var dati = null;
+			    if (this.readyState == 4 && this.status == 200) {
+			      var ris = this.responseText;
+			      var obj = JSON.parse(ris);
+			      var i = 0;
+			      while(obj.categories[i].score>=0.1){
+			      	var dati = obj.categories[i].name;
+				    var score = obj.categories[i].score;
+				    await setCategory(obj.categories[i]);
+				    i++;
+			      }
+
+			    }
+			      return;
+		  	};
+		  	string = string.replace(/\u2019/g,'');
+			xhttp.open("GET", "https://api.dandelion.eu/datatxt/cl/v1/?text="+string+"&model=54cf2e1c-e48a-4c14-bb96-31dc11f84eac&token=5f4761a82e7b4a96a729fb9ae6dc7fc0", true);
+	  		xhttp.send();
+		//}
+	  	return;
+	}
+
+
 	async function setFirstPartyToStore(tab,cookies){
-		var typeWebsite;
 		urlTab = new URL(tab.url);
+		var baseUrl = await getBaseUrl(tab.url);
+		console.log('url-base: '+baseUrl);
 			urlMetadata(baseUrl).then(
   			async function (metadata) { // success handler
   				
     			let newDate = new Date(Date.now());
+    			if(metadata.title || metadata.description || metadata.keywords){
+	    			await getCategory(metadata.title,metadata.description,metadata.keywords,baseUrl);
+	    		}
 				if(urlTab.hostname){
 					party = {
 						"hostname": urlTab.hostname,
 						"iconURL" : tab.favIconUrl,
 						"firstParty" : true,
 						"requestTime" : newDate,
+						"category" : category,
 						"cookiesFirstParty" : (cookies.length>0) ? cookies : ''
 					};
+					console.log('ARRIVA');
 					await storeParty(party.hostname,party);
 				}
 
