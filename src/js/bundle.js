@@ -25510,7 +25510,7 @@ module.exports={
   "_resolved": "https://registry.npmjs.org/cheerio/-/cheerio-0.22.0.tgz",
   "_shasum": "a9baa860a3f9b595a6b81b1a86873121ed3a269e",
   "_spec": "cheerio@^0.22.0",
-  "_where": "C:\\Users\\Moss\\Desktop\\tesi\\Tirocinio\\lighthouse\\node_modules\\url-metadata",
+  "_where": "C:\\Users\\Moss\\Desktop\\tesi\\lighthouse\\node_modules\\url-metadata",
   "author": {
     "name": "Matt Mueller",
     "email": "mattmuelle@gmail.com",
@@ -34453,7 +34453,7 @@ module.exports={
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.5.3.tgz",
   "_shasum": "cb59eb2efdaf73a0bd78ccd7015a62ad6e0f93d6",
   "_spec": "elliptic@^6.5.3",
-  "_where": "C:\\Users\\Moss\\Desktop\\tesi\\Tirocinio\\lighthouse\\node_modules\\browserify-sign",
+  "_where": "C:\\Users\\Moss\\Desktop\\tesi\\lighthouse\\node_modules\\browserify-sign",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
@@ -114968,8 +114968,6 @@ function extend() {
 	}
 
 	async function setHeaderThirdParty(response){
-		
-
   		let urlResponse = response.url;
     	chrome.tabs.get(response.tabId, (tab) =>{
 			if(tab.url !== urlResponse && tab.active){ //escludo il sito di prima parte considerato in seguito
@@ -114986,9 +114984,7 @@ function extend() {
 				});
 			}
 	 	});
-
 	}
-
 	async function saveParty(details,tab){
 		var p = await setParty(details,tab);
 		return p;
@@ -115017,15 +115013,10 @@ function extend() {
 	}
 
 	async function setParty(event,tab){
-
-		
 		let data = event.data;
 		let cookies = (event.cookies) ? event.cookies : '';
 		let tabId = ((data.tabId) ? data.tabId : data.response.tabId);
 		var party = {};
-
-
-	
 			let urlTab = '';
 			switch(event.type){
 				case 'thirdParty':
@@ -115042,7 +115033,6 @@ function extend() {
 			}
 
 			return true;
-
 
 	}
 
@@ -115106,10 +115096,8 @@ function extend() {
 		  	string = string.replace(/\u2019/g,'');
 			xhttp.open("GET", "https://api.dandelion.eu/datatxt/cl/v1/?text="+string+"&model=54cf2e1c-e48a-4c14-bb96-31dc11f84eac&token=5f4761a82e7b4a96a729fb9ae6dc7fc0", true);
 	  		xhttp.send();
-		//}
 	  	return;
 	}
-
 
 	async function setFirstPartyToStore(tab,cookies){
 		urlTab = new URL(tab.url);
@@ -115134,9 +115122,6 @@ function extend() {
 					console.log('ARRIVA');
 					await storeParty(party.hostname,party);
 				}
-
-
-
   			},
   			function (error) { // failure handler
     			console.log(error)
