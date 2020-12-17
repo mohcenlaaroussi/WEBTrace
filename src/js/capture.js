@@ -100,8 +100,6 @@
 	}
 
 	async function setHeaderThirdParty(response){
-		
-
   		let urlResponse = response.url;
     	chrome.tabs.get(response.tabId, (tab) =>{
 			if(tab.url !== urlResponse && tab.active){ //escludo il sito di prima parte considerato in seguito
@@ -118,9 +116,7 @@
 				});
 			}
 	 	});
-
 	}
-
 	async function saveParty(details,tab){
 		var p = await setParty(details,tab);
 		return p;
@@ -149,15 +145,10 @@
 	}
 
 	async function setParty(event,tab){
-
-		
 		let data = event.data;
 		let cookies = (event.cookies) ? event.cookies : '';
 		let tabId = ((data.tabId) ? data.tabId : data.response.tabId);
 		var party = {};
-
-
-	
 			let urlTab = '';
 			switch(event.type){
 				case 'thirdParty':
@@ -174,7 +165,6 @@
 			}
 
 			return true;
-
 
 	}
 
@@ -238,10 +228,8 @@
 		  	string = string.replace(/\u2019/g,'');
 			xhttp.open("GET", "https://api.dandelion.eu/datatxt/cl/v1/?text="+string+"&model=54cf2e1c-e48a-4c14-bb96-31dc11f84eac&token=5f4761a82e7b4a96a729fb9ae6dc7fc0", true);
 	  		xhttp.send();
-		//}
 	  	return;
 	}
-
 
 	async function setFirstPartyToStore(tab,cookies){
 		urlTab = new URL(tab.url);
@@ -266,9 +254,6 @@
 					console.log('ARRIVA');
 					await storeParty(party.hostname,party);
 				}
-
-
-
   			},
   			function (error) { // failure handler
     			console.log(error)
