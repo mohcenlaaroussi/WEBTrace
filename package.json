@@ -4,7 +4,9 @@
   "description": "cookie tracing",
   "main": "background.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "build": "browserify src/js/capture.js -o src/js/bundle.js",
+    "watch": "watchify src/js/store.js -o src/js/bundle.js"
   },
   "repository": {
     "type": "git",
@@ -17,7 +19,8 @@
   ],
   "devDependencies": {
     "browserify": "^17.0.0",
-    "dexie": "^3.0.3"
+    "dexie": "^3.0.3",
+    "watchify": "^3.11.1"
   },
   "bugs": {
     "url": "https://gitlab.com/LaSER_lab/lighthouse/issues"

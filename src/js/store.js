@@ -1,44 +1,42 @@
-const store = {
-
-	db:null,
-	init(){
-		if(!this.db){
-			this.createDB();
+	var db=null;
+	function init(){
+		if(!db){
+			createDB();
 		}
-	},
+	}
 
-	async isNotPresent(hostname){
-		if (!(await this.db.websites.get(hostname))) {
+	async function isNotPresent(hostname){
+		if (!(await db.websites.get(hostname))) {
       		return true;
     	}
     	return false;
-	},
+	}
 
-	async getWebsite(hostname){
-		return await this.db.websites.get(hostname);
-	},
+	async function getWebsite(hostname){
+		return await db.websites.get(hostname);
+	}
 
 
-	createDB(){
-		this.db = new Dexie('db_siti_cookie');
-		this.db.version(1).stores({
+	function createDB(){
+		db = new Dexie('db_siti_cookie');
+		db.version(1).stores({
 			websites: "hostname"
 		});
-		this.db.open();
-	},
+		db.open();
+	}
 
-	async setWebsite(hostname, party){
+	async function setWebsite(hostname, party){
 
-	},
+	}
 
-	async writeDb(website) {
+	async function writeDb(website) {
     	for (const key in website) {
-      		website[key] = this.convertBooleans(key, website[key]);
+      		website[key] = convertBooleans(key, website[key]);
     	}
-    	return await this.db.websites.put(website);
-  	},
+    	return await db.websites.put(website);
+  	}
 
-  	convertBooleans(key,element){
+  	function convertBooleans(key,element){
   		if (element === true) {
        		element = 1;
       	}
@@ -46,35 +44,35 @@ const store = {
         	element = 0;
       	}
       	return element
-  	},
+  	}
 
-  	async updateDb(hostname,website){
+  	async function updateDb(hostname,website){
   		for (const key in website) {
-      		website[key] = this.convertBooleans(key, website[key]);
+      		website[key] = convertBooleans(key, website[key]);
     	}
-    	return await this.db.websites.update(hostname,website);
-  	},
+    	return await db.websites.update(hostname,website);
+  	}
 
-  	async isDuplicate(thirdParties,hostname){
+  	async function isDuplicate(thirdParties,hostname){
 		for(var i = 0; i<thirdParties.length; i++){
 			if(thirdParties[i].hostname == hostname){
 				return true;
 			}
 		}
 		return false
-  	},
+  	}
 
 
-  	async storeThirdParty(hostname,party){
+  	async function storeThirdParty(hostname,party){
   		var website = {};
-		notPresent = await this.isNotPresent(hostname);
+		notPresent = await isNotPresent(hostname);
 		if(!notPresent){
-			website = await this.getWebsite(hostname);
+			website = await getWebsite(hostname);
 		}
 		if(notPresent){ //se presente
 			website['hostname'] = hostname;
 			website['firstPartyInserted'] = 0;
-			await this.writeDb(website);
+			await writeDb(website);
 		}
 		if(!('thirdPartySites' in website)){
 			website['thirdPartySites'] = [];
@@ -83,18 +81,18 @@ const store = {
 			"hostname": party.target,
 			"cookies": (party.cookiesThirdParty.length>0) ? party.cookiesThirdParty : ''
 		};
-		if(!await this.isDuplicate(website['thirdPartySites'],party.target)){
+		if(!await isDuplicate(website['thirdPartySites'],party.target)){
 			website['thirdPartySites'].push(obj);
-			await this.updateDb(hostname,website);
+			await updateDb(hostname,website);
 		}
-		return website;
-  	},
+		return website;65
+  	}
 
-	  	async storeFirstParty(hostname,party){
+	  	async function storeFirstParty(hostname,party){
 	  		var website = {};
-			notPresent = await this.isNotPresent(hostname);
+			notPresent = await isNotPresent(hostname);
 			if(!notPresent){
-				website = await this.getWebsite(hostname);
+				website = await getWebsite(hostname);
 			}
 			if(notPresent || website['firstPartyInserted'] == 0){ // se non è presente oppure se è stato aggiunto da terze parti
 				for(let key in party){
@@ -107,14 +105,14 @@ const store = {
 					website[key] = party[key];
 				}
 				if(notPresent){
-					await this.writeDb(website);
+					await writeDb(website);
 				}
 				if(website['firstPartyInserted'] == 0){
-					await this.updateDb(hostname,website);
+					await updateDb(hostname,website);
 				}
 			}else{
 				let newDate = new Date(Date.now());
-				this.db.websites.update(hostname, {requestTime: newDate}).then(function (updated) {
+				db.websites.update(hostname, {requestTime: newDate}).then(function (updated) {
 	  			if (updated)
 				   	console.log ("Updated");
 				 else
@@ -122,18 +120,18 @@ const store = {
 				});
 			}
 			return website;
-	  	},
+	  	}
 
-	async storeParty(hostname, party){
+	async function storeParty(hostname, party){
 		var website = {};
-		console.log('party: '+party.target);
+		console.log('party: '+party.firstParty);
 		if(party !== undefined){
 			switch(party.firstParty){
 				case true:
-					website = await this.storeFirstParty(hostname,party);
+					website = await storeFirstParty(hostname,party);
 				break;
 				case false: 
-					website = await this.storeThirdParty(hostname,party);
+					website = await storeThirdParty(hostname,party);
 
 				break;
 					
@@ -143,6 +141,4 @@ const store = {
 		return;
 	}
 
-};
-
-store.init();
+init();

@@ -1,11 +1,13 @@
-const capture = {
-	init(){
-		this.listener();
-	},
+	const urlMetadata = require('url-metadata');
+	var category = [];
+	var prevTab = null;
+	function init(){
+		listener();
+	}
 
 
-	async listener(){
-		var myself = this;
+	async function listener(){
+		
 		var queue = [];
 		chrome.webRequest.onResponseStarted.addListener(function(response){
 		var initiator = new URL(response.initiator);
@@ -17,10 +19,9 @@ const capture = {
 	    		"url" : response.originUrl
 	    	};
 	    	if(response.tabId >=0){
-	    		var cookieList = document.getElementById('cookie-list');
-	    	queue.push(responseDetails);
-	    	myself.processEvent(queue).then();
-  			return true;
+		    	queue.push(responseDetails);
+		    	processEvent(queue).then();
+  				return true;
 	    	}
 		}
 	},
@@ -38,25 +39,23 @@ const capture = {
     			tab
     		}
     	};
-    	
 	    	queue.push(eventDetails);
-	    	myself.processEvent(queue).then();
+	    	processEvent(queue).then();
   			return true;
-
     });
 
-	},
+	}
 
-	async processEvent(queue){
-		var myself = this;
+	async function processEvent(queue){
+		
     	
-		var p = await myself.processHeader(queue);
+		var p = await processHeader(queue);
 		return p;
-	},
+	}
 
-	async processHeader(queue,ignore = false){
-		var myself = this;
-		if (myself.processingQueue && !ignore) {
+	async function processHeader(queue,ignore = false){
+		var processingQueue;
+		if (processingQueue && !ignore) {
 	      return;
 	    }
 	    if (queue.length >= 1) {
@@ -64,20 +63,23 @@ const capture = {
 	    	try{
 		        const nextEvent = queue.shift();
 
-		        myself.processingQueue = true;
+		        processingQueue = true;
 
 		        switch (nextEvent.type) {
 		          case 'firstParty':
-
-		            await myself.setHeaderFirstParty(
+			          if(prevTab){
+			          	if(prevTab.id != nextEvent.data.tabId){
+			          		prevTab = null;
+			          	}
+			          }
+		            await setHeaderFirstParty(
 		              nextEvent.data.tabId,
 		              nextEvent.data.changeInfo,
 		              nextEvent.data.tab
 		            );
-
-		            break;
+		          break;
 		          case 'thirdParty':
-		            await myself.setHeaderThirdParty(nextEvent.response);
+		            await setHeaderThirdParty(nextEvent.response);
 		          break;
 		          default:
 		            throw new Error(
@@ -89,22 +91,20 @@ const capture = {
         		console.warn('Exception found in queue process', e);
       		}
 
-		    await myself.processHeader(queue,true);
+		    await processHeader(queue,true);
 	    } else {
-		        console.log('ll');
-
-	      myself.processingQueue = false;
+	      processingQueue = false;
 	    }
 
 	    return true;
-	},
+	}
 
-	async setHeaderThirdParty(response){
-		var myself = this;
+	async function setHeaderThirdParty(response){
+		
 
   		let urlResponse = response.url;
     	chrome.tabs.get(response.tabId, (tab) =>{
-			if(tab.url !== urlResponse){ //escludo il sito di prima parte considerato in seguito
+			if(tab.url !== urlResponse && tab.active){ //escludo il sito di prima parte considerato in seguito
 				chrome.cookies.getAll({url: urlResponse}, async function(cookies){	
    				const details = {
   					"type" : 'thirdParty',
@@ -112,42 +112,45 @@ const capture = {
  					"cookies" : (cookies.length>0) ? cookies : ''
 	 			};
 
-	 			await myself.saveParty(details,tab).then();
+	 			await saveParty(details,tab).then();
   				return true;
 	 	
 				});
 			}
 	 	});
 
-	},
+	}
 
-	async saveParty(details,tab){
-		var myself = this;
-		var p = await myself.setParty(details,tab);
+	async function saveParty(details,tab){
+		var p = await setParty(details,tab);
 		return p;
-	},
+	}
 
-	async setHeaderFirstParty(tabId, changeInfo, tab){
+	async function setHeaderFirstParty(tabId, changeInfo, tab){
+		var prevUrl =(prevTab) ? new URL(prevTab.url) : new URL(tab.url);
+		if((changeInfo.url || prevTab == null) && tab.active){
+			var url =(changeInfo.url) ? new URL(changeInfo.url) : new URL('https://prova.com');
+			if(url.hostname != prevUrl.hostname && tab.status === 'complete'){
+				let urlTab = tab.url;
+				chrome.cookies.getAll({url: urlTab}, async function(cookies){
+					const details = {
+				    	"type" : 'firstParty',
+				    	"data" : {tabId, changeInfo, tab},
+				    	"cookies" : (cookies.length>0) ? cookies : ''
+			 	    };
+					await saveParty(details,tab).then();
 
-		var myself = this;
-		let urlTab = tab.url;
-		chrome.cookies.getAll({url: urlTab}, async function(cookies){
-			const details = {
-		    	"type" : 'firstParty',
-		    	"data" : {tabId, changeInfo, tab},
-		    	"cookies" : (cookies.length>0) ? cookies : ''
-	 	    };
-			await myself.saveParty(details,tab).then();
+		  			return;
 
-  			return;
+				});
+				return;
+			}
+		}
+	}
 
-		});
-		return;
-	},
+	async function setParty(event,tab){
 
-	async setParty(event,tab){
-
-		var myself = this;
+		
 		let data = event.data;
 		let cookies = (event.cookies) ? event.cookies : '';
 		let tabId = ((data.tabId) ? data.tabId : data.response.tabId);
@@ -159,12 +162,12 @@ const capture = {
 			switch(event.type){
 				case 'thirdParty':
 
-					await myself.setThirdPartyToStore(tab, data,cookies);
+					await setThirdPartyToStore(tab, data,cookies);
 
 				break;
 				case 'firstParty':
 					
-					await myself.setFirstPartyToStore(tab,cookies);
+					await setFirstPartyToStore(tab,cookies);
 
 				break;
 
@@ -173,13 +176,12 @@ const capture = {
 			return true;
 
 
-	},
+	}
 
-	async setThirdPartyToStore(tab, data, cookies){
+	async function setThirdPartyToStore(tab, data, cookies){
 		urlTab = new URL(tab.url);
 		const urlTarget = new URL(data.url);
 		if(data.url && data.initiator && !(urlTarget.hostname.includes(urlTab.hostname))){
-		console.log('SITO TERZE PARTI: -->'+urlTarget.hostname);
 
 			const urlOrigin = new URL(data.initiator);
 			const urlFirstparty = new URL(tab.url);
@@ -191,28 +193,44 @@ const capture = {
 				"firstParty" : false,
 				"cookiesThirdParty" : (cookies.length>0) ? cookies : ''
 			};
+			if(urlFirstparty.hostname!=party.origin){
+				await storeParty(urlFirstparty.hostname,party);
+			}else{
+				await storeParty(party.origin,party);
 
-			await store.storeParty(party.origin,party);
+			}
 		}
-	},
-	async setFirstPartyToStore(tab,cookies){
-
+	}
+	async function setCategory(obj){
+		category.push(obj);
+	}
+	async function setFirstPartyToStore(tab,cookies){
+		var typeWebsite;
 		urlTab = new URL(tab.url);
-		let newDate = new Date(Date.now());
+			urlMetadata(baseUrl).then(
+  			async function (metadata) { // success handler
+  				
+    			let newDate = new Date(Date.now());
+				if(urlTab.hostname){
+					party = {
+						"hostname": urlTab.hostname,
+						"iconURL" : tab.favIconUrl,
+						"firstParty" : true,
+						"requestTime" : newDate,
+						"cookiesFirstParty" : (cookies.length>0) ? cookies : ''
+					};
+					await storeParty(party.hostname,party);
+				}
 
-		if(urlTab.hostname && tab.status === 'complete'){
-			party = {
-				"hostname": urlTab.hostname,
-				"iconURL" : tab.favIconUrl,
-				"firstParty" : true,
-				"requestTime" : newDate,
-				"cookiesFirstParty" : (cookies.length>0) ? cookies : ''
-			};
 
-			await store.storeParty(party.hostname,party);
-		}
+
+  			},
+  			function (error) { // failure handler
+    			console.log(error)
+  			});
+		prevTab = tab;
+		obj = [];
 		return;
 	}
-};
 
-capture.init();
+init();
