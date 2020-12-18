@@ -87,7 +87,6 @@
 		            );
 		        }
 			}catch (e) {
-        		// eslint-disable-next-line no-console
         		console.warn('Exception found in queue process', e);
       		}
 
@@ -205,9 +204,8 @@
 	}
 
 	async function getCategory(title,description,keywords,baseUrl){
-		var string = "empty";
 		//TODO TRADUZIONE TESTO
-		string += title +' '+description+' '+keywords.toString();
+		var string += title +' '+description+' '+keywords.toString();
 			var xhttp = new XMLHttpRequest();
 		  	xhttp.onreadystatechange = async function() {
 		  		var dati = null;
@@ -231,6 +229,37 @@
 	  	return;
 	}
 
+		async function getTypeWebsite(title,description,keywords){
+		var typeWebsite;
+		var string = title +' '+description+' '+keywords.toString();
+	  	string = string.replace(/\u2019/g,' ').toLowerCase();
+	  	//blog
+	  	if(string.includes("blog")){
+	  		typeWebsite = "Blog";
+	  	}
+	  	//news_media
+	  	if(string.includes("news") && string.includes("media")){
+	  		typeWebsite = "News";
+	  	}
+	  	//Streaming_video
+	  	if(string.includes("streaming") || string.includes("film")){
+	  		typeWebsite = "TV/Video streaming";
+	  	}
+
+	  	//Social media
+	  	//TODO SOCIAL MEDIA
+	  	/*if(string.includes("streaming") || string.includes("film")){
+	  		typeWebsite = "TV/Video streaming";
+	  	}*/
+
+	  	//e-commerce
+	  	//TODO TRADUZIONE INGLESE
+	  	if(string.includes("shop")){
+	  		typeWebsite = "E-commerce";
+	  	}
+	  	return typeWebsite;
+	}
+
 	async function setFirstPartyToStore(tab,cookies){
 		urlTab = new URL(tab.url);
 		var baseUrl = await getBaseUrl(tab.url);
@@ -241,6 +270,7 @@
     			let newDate = new Date(Date.now());
     			if(metadata.title || metadata.description || metadata.keywords){
 	    			await getCategory(metadata.title,metadata.description,metadata.keywords,baseUrl);
+	    			typeWebsite = await getTypeWebsite(metadata.title,metadata.description,metadata.keywords);
 	    		}
 				if(urlTab.hostname){
 					party = {
@@ -249,9 +279,9 @@
 						"firstParty" : true,
 						"requestTime" : newDate,
 						"category" : category,
+						"type" : typeWebsite,
 						"cookiesFirstParty" : (cookies.length>0) ? cookies : ''
 					};
-					console.log('ARRIVA');
 					await storeParty(party.hostname,party);
 				}
   			},
