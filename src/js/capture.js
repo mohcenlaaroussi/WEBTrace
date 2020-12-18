@@ -229,6 +229,37 @@
 	  	return;
 	}
 
+		async function getTypeWebsite(title,description,keywords){
+		var typeWebsite;
+		var string = title +' '+description+' '+keywords.toString();
+	  	string = string.replace(/\u2019/g,' ').toLowerCase();
+	  	//blog
+	  	if(string.includes("blog")){
+	  		typeWebsite = "Blog";
+	  	}
+	  	//news_media
+	  	if(string.includes("news") && string.includes("media")){
+	  		typeWebsite = "News";
+	  	}
+	  	//Streaming_video
+	  	if(string.includes("streaming") || string.includes("film")){
+	  		typeWebsite = "TV/Video streaming";
+	  	}
+
+	  	//Social media
+	  	//TODO SOCIAL MEDIA
+	  	/*if(string.includes("streaming") || string.includes("film")){
+	  		typeWebsite = "TV/Video streaming";
+	  	}*/
+
+	  	//e-commerce
+	  	//TODO TRADUZIONE INGLESE
+	  	if(string.includes("shop")){
+	  		typeWebsite = "E-commerce";
+	  	}
+	  	return typeWebsite;
+	}
+
 	async function setFirstPartyToStore(tab,cookies){
 		urlTab = new URL(tab.url);
 		var baseUrl = await getBaseUrl(tab.url);
@@ -239,6 +270,7 @@
     			let newDate = new Date(Date.now());
     			if(metadata.title || metadata.description || metadata.keywords){
 	    			await getCategory(metadata.title,metadata.description,metadata.keywords,baseUrl);
+	    			typeWebsite = await getTypeWebsite(metadata.title,metadata.description,metadata.keywords);
 	    		}
 				if(urlTab.hostname){
 					party = {
@@ -247,6 +279,7 @@
 						"firstParty" : true,
 						"requestTime" : newDate,
 						"category" : category,
+						"type" : typeWebsite,
 						"cookiesFirstParty" : (cookies.length>0) ? cookies : ''
 					};
 					await storeParty(party.hostname,party);
