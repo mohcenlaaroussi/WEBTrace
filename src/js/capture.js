@@ -87,7 +87,6 @@
 		            );
 		        }
 			}catch (e) {
-        		// eslint-disable-next-line no-console
         		console.warn('Exception found in queue process', e);
       		}
 
@@ -205,9 +204,8 @@
 	}
 
 	async function getCategory(title,description,keywords,baseUrl){
-		var string = "empty";
 		//TODO TRADUZIONE TESTO
-		string += title +' '+description+' '+keywords.toString();
+		var string += title +' '+description+' '+keywords.toString();
 			var xhttp = new XMLHttpRequest();
 		  	xhttp.onreadystatechange = async function() {
 		  		var dati = null;
@@ -251,7 +249,6 @@
 						"category" : category,
 						"cookiesFirstParty" : (cookies.length>0) ? cookies : ''
 					};
-					console.log('ARRIVA');
 					await storeParty(party.hostname,party);
 				}
   			},
