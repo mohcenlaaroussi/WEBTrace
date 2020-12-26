@@ -5,13 +5,18 @@ chrome.browserAction.onClicked.addListener(apri);
 async function apri() {
     var finestre = [];
     var boolean;
-    const fullUrl = chrome.extension.getURL('index.html');
+    //console.log(fullUrl);
     let prova = await chrome.tabs.query({}, function(tabb){
+        let pos = 0;
+        const fullUrl = chrome.extension.getURL('index.html');
     	for (var i = 0; i < tabb.length; i++) {
-    		finestre[i] = (tabb[i].url === fullUrl);
+    		finestre[i] = (tabb[i].url == fullUrl);
+            if(tabb[i].url == fullUrl){
+                pos = i;
+            }
     	}
-    	var bool = finestre[tabb.length-1];
-    	apriTab(bool);
+    	var bool = finestre[pos];
+        apriTab(bool);
     });
     function apriTab(bool){
     	console.log(bool);

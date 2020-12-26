@@ -16,6 +16,18 @@
 		return await db.websites.get(hostname);
 	}
 
+	async function getWebsitesDb(){
+		 const websites = await db.websites.filter((website) => {
+	      	return website.firstParty;
+	    }).toArray();
+	    const output = {};
+	    for (const website of websites) {
+	      output[website.hostname]
+	        = website;
+	    }
+    	return output;
+  	}
+
 
 	function createDB(){
 		db = new Dexie('db_siti_cookie');
@@ -85,7 +97,7 @@
 			website['thirdPartySites'].push(obj);
 			await updateDb(hostname,website);
 		}
-		return website;65
+		return website;
   	}
 
 	  	async function storeFirstParty(hostname,party){
@@ -122,6 +134,14 @@
 			return website;
 	  	}
 
+
+	function updateGraph(...args) {
+    	chrome.runtime.sendMessage({
+      		type: 'updateGraph',
+      		args
+    	});
+  	}
+
 	async function storeParty(hostname, party){
 		var website = {};
 		console.log('party: '+party.firstParty);
@@ -129,6 +149,9 @@
 			switch(party.firstParty){
 				case true:
 					website = await storeFirstParty(hostname,party);
+					console.log('ciaoooo');
+					updateGraph(website);
+					console.log('funziona qua');
 				break;
 				case false: 
 					website = await storeThirdParty(hostname,party);
@@ -137,7 +160,7 @@
 					
 			}
 		}
-		console.log(website);
+		//console.log(website);
 		return;
 	}
 

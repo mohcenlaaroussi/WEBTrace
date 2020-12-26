@@ -1,6 +1,7 @@
 	const urlMetadata = require('url-metadata');
 	var category = [];
 	var prevTab = null;
+	var isAllowed = false;
 	function init(){
 		listener();
 	}
@@ -31,6 +32,13 @@
 	["responseHeaders"]);
 
 	chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
+		/*if(tab.protocol = 'chrome'){
+			isAllowed = false;
+		}else{
+			isAllowed = true;
+		}*/
+		console.log('inizio');
+		console.log(tab);
 		const eventDetails = {
     		"type" : 'firstParty',
     		"data" : {
@@ -67,18 +75,22 @@
 
 		        switch (nextEvent.type) {
 		          case 'firstParty':
-			          if(prevTab){
-			          	if(prevTab.id != nextEvent.data.tabId){
-			          		prevTab = null;
-			          	}
-			          }
-		            await setHeaderFirstParty(
-		              nextEvent.data.tabId,
-		              nextEvent.data.changeInfo,
-		              nextEvent.data.tab
-		            );
+		          	var protocol = nextEvent.data.tab.url.split(":")[0];
+		          	if(protocol != 'chrome' && protocol != 'chrome-extension'){
+				        if(prevTab){
+					       	if(prevTab.id != nextEvent.data.tabId){
+					     		prevTab = null;
+			        	  	}
+				        }
+			            await setHeaderFirstParty(
+			              nextEvent.data.tabId,
+			              nextEvent.data.changeInfo,
+			              nextEvent.data.tab
+			            );
+					}
 		          break;
 		          case 'thirdParty':
+
 		            await setHeaderThirdParty(nextEvent.response);
 		          break;
 		          default:
@@ -124,8 +136,10 @@
 	async function setHeaderFirstParty(tabId, changeInfo, tab){
 		var prevUrl =(prevTab) ? new URL(prevTab.url) : new URL(tab.url);
 		if((changeInfo.url || prevTab == null) && tab.active){
+
 			var url =(changeInfo.url) ? new URL(changeInfo.url) : new URL('https://prova.com');
 			if(url.hostname != prevUrl.hostname && tab.status === 'complete'){
+
 				let urlTab = tab.url;
 				chrome.cookies.getAll({url: urlTab}, async function(cookies){
 					const details = {
@@ -133,6 +147,7 @@
 				    	"data" : {tabId, changeInfo, tab},
 				    	"cookies" : (cookies.length>0) ? cookies : ''
 			 	    };
+
 					await saveParty(details,tab).then();
 
 		  			return;
@@ -205,7 +220,7 @@
 
 	async function getCategory(title,description,keywords,baseUrl){
 		//TODO TRADUZIONE TESTO
-		var string += title +' '+description+' '+keywords.toString();
+		var string = title +' '+description+' '+keywords.toString();
 			var xhttp = new XMLHttpRequest();
 		  	xhttp.onreadystatechange = async function() {
 		  		var dati = null;
@@ -261,14 +276,15 @@
 	}
 
 	async function setFirstPartyToStore(tab,cookies){
+		var typeWebsite = '';
 		urlTab = new URL(tab.url);
 		var baseUrl = await getBaseUrl(tab.url);
 		console.log('url-base: '+baseUrl);
 			urlMetadata(baseUrl).then(
   			async function (metadata) { // success handler
-  				
     			let newDate = new Date(Date.now());
     			if(metadata.title || metadata.description || metadata.keywords){
+
 	    			await getCategory(metadata.title,metadata.description,metadata.keywords,baseUrl);
 	    			typeWebsite = await getTypeWebsite(metadata.title,metadata.description,metadata.keywords);
 	    		}
@@ -289,6 +305,7 @@
     			console.log(error)
   			});
 		prevTab = tab;
+		category = [];
 		obj = [];
 		return;
 	}

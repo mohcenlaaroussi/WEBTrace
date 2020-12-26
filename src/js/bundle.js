@@ -114869,6 +114869,7 @@ function extend() {
 	const urlMetadata = require('url-metadata');
 	var category = [];
 	var prevTab = null;
+	var isAllowed = false;
 	function init(){
 		listener();
 	}
@@ -114899,6 +114900,13 @@ function extend() {
 	["responseHeaders"]);
 
 	chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
+		/*if(tab.protocol = 'chrome'){
+			isAllowed = false;
+		}else{
+			isAllowed = true;
+		}*/
+		console.log('inizio');
+		console.log(tab);
 		const eventDetails = {
     		"type" : 'firstParty',
     		"data" : {
@@ -114935,18 +114943,22 @@ function extend() {
 
 		        switch (nextEvent.type) {
 		          case 'firstParty':
-			          if(prevTab){
-			          	if(prevTab.id != nextEvent.data.tabId){
-			          		prevTab = null;
-			          	}
-			          }
-		            await setHeaderFirstParty(
-		              nextEvent.data.tabId,
-		              nextEvent.data.changeInfo,
-		              nextEvent.data.tab
-		            );
+		          	var protocol = nextEvent.data.tab.url.split(":")[0];
+		          	if(protocol != 'chrome' && protocol != 'chrome-extension'){
+				        if(prevTab){
+					       	if(prevTab.id != nextEvent.data.tabId){
+					     		prevTab = null;
+			        	  	}
+				        }
+			            await setHeaderFirstParty(
+			              nextEvent.data.tabId,
+			              nextEvent.data.changeInfo,
+			              nextEvent.data.tab
+			            );
+					}
 		          break;
 		          case 'thirdParty':
+
 		            await setHeaderThirdParty(nextEvent.response);
 		          break;
 		          default:
@@ -114955,7 +114967,6 @@ function extend() {
 		            );
 		        }
 			}catch (e) {
-        		// eslint-disable-next-line no-console
         		console.warn('Exception found in queue process', e);
       		}
 
@@ -114993,8 +115004,10 @@ function extend() {
 	async function setHeaderFirstParty(tabId, changeInfo, tab){
 		var prevUrl =(prevTab) ? new URL(prevTab.url) : new URL(tab.url);
 		if((changeInfo.url || prevTab == null) && tab.active){
+
 			var url =(changeInfo.url) ? new URL(changeInfo.url) : new URL('https://prova.com');
 			if(url.hostname != prevUrl.hostname && tab.status === 'complete'){
+
 				let urlTab = tab.url;
 				chrome.cookies.getAll({url: urlTab}, async function(cookies){
 					const details = {
@@ -115002,6 +115015,7 @@ function extend() {
 				    	"data" : {tabId, changeInfo, tab},
 				    	"cookies" : (cookies.length>0) ? cookies : ''
 			 	    };
+
 					await saveParty(details,tab).then();
 
 		  			return;
@@ -115073,9 +115087,8 @@ function extend() {
 	}
 
 	async function getCategory(title,description,keywords,baseUrl){
-		var string = "empty";
 		//TODO TRADUZIONE TESTO
-		string += title +' '+description+' '+keywords.toString();
+		var string = title +' '+description+' '+keywords.toString();
 			var xhttp = new XMLHttpRequest();
 		  	xhttp.onreadystatechange = async function() {
 		  		var dati = null;
@@ -115099,16 +115112,49 @@ function extend() {
 	  	return;
 	}
 
+		async function getTypeWebsite(title,description,keywords){
+		var typeWebsite;
+		var string = title +' '+description+' '+keywords.toString();
+	  	string = string.replace(/\u2019/g,' ').toLowerCase();
+	  	//blog
+	  	if(string.includes("blog")){
+	  		typeWebsite = "Blog";
+	  	}
+	  	//news_media
+	  	if(string.includes("news") && string.includes("media")){
+	  		typeWebsite = "News";
+	  	}
+	  	//Streaming_video
+	  	if(string.includes("streaming") || string.includes("film")){
+	  		typeWebsite = "TV/Video streaming";
+	  	}
+
+	  	//Social media
+	  	//TODO SOCIAL MEDIA
+	  	/*if(string.includes("streaming") || string.includes("film")){
+	  		typeWebsite = "TV/Video streaming";
+	  	}*/
+
+	  	//e-commerce
+	  	//TODO TRADUZIONE INGLESE
+	  	if(string.includes("shop")){
+	  		typeWebsite = "E-commerce";
+	  	}
+	  	return typeWebsite;
+	}
+
 	async function setFirstPartyToStore(tab,cookies){
+		var typeWebsite = '';
 		urlTab = new URL(tab.url);
 		var baseUrl = await getBaseUrl(tab.url);
 		console.log('url-base: '+baseUrl);
 			urlMetadata(baseUrl).then(
   			async function (metadata) { // success handler
-  				
     			let newDate = new Date(Date.now());
     			if(metadata.title || metadata.description || metadata.keywords){
+
 	    			await getCategory(metadata.title,metadata.description,metadata.keywords,baseUrl);
+	    			typeWebsite = await getTypeWebsite(metadata.title,metadata.description,metadata.keywords);
 	    		}
 				if(urlTab.hostname){
 					party = {
@@ -115117,9 +115163,9 @@ function extend() {
 						"firstParty" : true,
 						"requestTime" : newDate,
 						"category" : category,
+						"type" : typeWebsite,
 						"cookiesFirstParty" : (cookies.length>0) ? cookies : ''
 					};
-					console.log('ARRIVA');
 					await storeParty(party.hostname,party);
 				}
   			},
@@ -115127,6 +115173,7 @@ function extend() {
     			console.log(error)
   			});
 		prevTab = tab;
+		category = [];
 		obj = [];
 		return;
 	}
