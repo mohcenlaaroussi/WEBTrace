@@ -357,34 +357,7 @@ async function setCategory(obj){
 	category.push(obj);
 }
 
-/*async function getCategory(title,description,keywords,baseUrl){
-	//TODO TRADUZIONE TESTO
-	var string = title +' '+description+' '+keywords.toString();
-		var xhttp = new XMLHttpRequest();
-			xhttp.onreadystatechange = async function() {
-				var dati = null;
-				if (this.readyState == 4 && this.status == 200) {
-					var ris = this.responseText;
-					var obj = JSON.parse(ris);
-					var i = 0;
-					while(obj.categories[i].score>=0.1){
-						var dati = obj.categories[i].name;
-					var score = obj.categories[i].score;
-					await setCategory(obj.categories[i]);
-					i++;
-					}
-
-				}
-					return;
-			};
-			string = string.replace(/\u2019/g,'');
-		xhttp.open("GET", "https://api.dandelion.eu/datatxt/cl/v1/?text="+string+"&model=54cf2e1c-e48a-4c14-bb96-31dc11f84eac&token=5f4761a82e7b4a96a729fb9ae6dc7fc0", true);
-			xhttp.send();
-		return;
-}*/
 async function getCategory(baseUrl){
-	//TODO TRADUZIONE TESTO
-	//var string = title +' '+description+' '+keywords.toString();
 		var xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = async function() {
 				var dati = null;
@@ -398,60 +371,15 @@ async function getCategory(baseUrl){
 						if(cat.score>=0.1)
 							await setCategory(cat);
 					}
-					/*while(obj.categories[i].score>=0.1){
-						//var dati = obj.categories[i].name;
-						//var score = obj.categories[i].score;
-						await setCategory(obj.categories[i]);
-						i++;
-				}*/
 				}
 					return;
 			};
 			var key = config.access_key+':'+config.secret_key;
-			//string = string.replace(/\u2019/g,'');
 			var encoded_key = window.btoa(key);
 			var url_encoded = window.btoa(baseUrl)
-			//xhttp.open("GET", "https://api.dandelion.eu/datatxt/cl/v1/?text="+string+"&model=54cf2e1c-e48a-4c14-bb96-31dc11f84eac&token=5f4761a82e7b4a96a729fb9ae6dc7fc0", true);
 			xhttp.open("GET", "https://api.webshrinker.com/categories/v3/<"+url_encoded+">", true);
 			xhttp.setRequestHeader("Authorization",'Basic '+ encoded_key);
-			//xhttp.send();
 		return;
-}
-
-
-//TODO DA MODIFICARE ANCORA. IN FASE PRELIMINARE
-async function getTypeWebsite(title,description,keywords){
-	var typeWebsite;
-	var string = title +' '+description+' '+keywords.toString();
-		string = string.replace(/\u2019/g,' ').toLowerCase();
-		//blog
-		if(string.includes("blog")){
-			typeWebsite = "Blog";
-		}
-		//news_media
-		if(string.includes("news") && string.includes("media")){
-			typeWebsite = "News";
-		}
-		//Streaming_video
-		if(string.includes("streaming") || string.includes("film")){
-			typeWebsite = "TV/Video streaming";
-		}
-
-		if(string.includes("wiki")){
-			typeWebsite = "Wiki";
-		}
-		//Social media
-		//TODO SOCIAL MEDIA
-		/*if(string.includes("streaming") || string.includes("film")){
-			typeWebsite = "TV/Video streaming";
-		}*/
-
-		//e-commerce
-		//TODO TRADUZIONE INGLESE
-		if(string.includes("shop")){
-			typeWebsite = "E-commerce";
-		}
-		return typeWebsite;
 }
 
 async function setFirstPartyToStore(tab,cookies){
@@ -466,7 +394,6 @@ async function setFirstPartyToStore(tab,cookies){
 				//if(metadata.title || metadata.description || metadata.keywords){
 
 					await getCategory(baseUrl);
-					typeWebsite = await getTypeWebsite(metadata.title,metadata.description,metadata.keywords);
 				//}
 			if(urlTab.hostname){
 				party = {
@@ -475,7 +402,6 @@ async function setFirstPartyToStore(tab,cookies){
 					"firstParty" : true,
 					"requestTime" : newDate,
 					"category" : category,
-					"type" : typeWebsite,
 					"cookiesFirstParty" : (cookies.length>0) ? cookies : ''
 				};
 				await storeParty(party.hostname,party);
