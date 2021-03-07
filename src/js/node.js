@@ -9,28 +9,40 @@ class Node {
       'hover' : false,
       'dragging' : false,
     };
-    
+
     this.radius = 25;
   }
-  
+
+
+  open(){
+      /*$('#modal-container').removeAttr('class').addClass(buttonId);
+      $('body').addClass('modal-active');*/
+
+      var body = document.body;
+      var modal = document.getElementById("modal-container");
+      modal.removeAttribute('class');
+      modal.classList.add("one");
+      body.classList.add("modal-active");
+
+  }
+
   render(img) {
     this.render_circle(img);
     this.render_text(img);
   }
-  
+
   render_text(img) {
     noStroke();
     fill(0);
     textSize(20);
-    //console.log('immagine: ');
+    //console.log('cella: ');
     //console.log(img);
 
    // text(this.label, this.x - (textWidth(this.label) / 2), this.y + ((textAscent() + textDescent()) / 4));
-    image(img,this.x - (img.width / 2),this.y-(img.width / 2))
+    image(img,this.x - (img.width / 2),this.y-(img.width / 2));
     img.resize((this.radius*2),(this.radius*2));
-
   }
-  
+
   render_circle(img) {
     stroke(0);
     strokeWeight(2);
@@ -46,10 +58,10 @@ class Node {
   //ellipseMode(RADIUS);
    ellipse(this.x, this.y, this.radius*2, this.radius*2);
   }
-  
+
   isInside(x, y) {
     const d = dist(this.x, this.y, x, y);
     return d <= this.radius;
   }
-  
+
 }

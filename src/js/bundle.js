@@ -25488,38 +25488,31 @@ exports.isHtml = function(str) {
 
 },{"./parse":125,"dom-serializer":159}],128:[function(require,module,exports){
 module.exports={
-  "_from": "cheerio@^0.22.0",
-  "_id": "cheerio@0.22.0",
-  "_inBundle": false,
-  "_integrity": "sha1-qbqoYKP5tZWmuBsahocxIe06Jp4=",
-  "_location": "/cheerio",
-  "_phantomChildren": {},
-  "_requested": {
-    "type": "range",
-    "registry": true,
-    "raw": "cheerio@^0.22.0",
-    "name": "cheerio",
-    "escapedName": "cheerio",
-    "rawSpec": "^0.22.0",
-    "saveSpec": null,
-    "fetchSpec": "^0.22.0"
-  },
-  "_requiredBy": [
-    "/url-metadata"
+  "name": "cheerio",
+  "version": "0.22.0",
+  "description": "Tiny, fast, and elegant implementation of core jQuery designed specifically for the server",
+  "author": "Matt Mueller <mattmuelle@gmail.com> (mat.io)",
+  "license": "MIT",
+  "keywords": [
+    "htmlparser",
+    "jquery",
+    "selector",
+    "scraper",
+    "parser",
+    "html"
   ],
-  "_resolved": "https://registry.npmjs.org/cheerio/-/cheerio-0.22.0.tgz",
-  "_shasum": "a9baa860a3f9b595a6b81b1a86873121ed3a269e",
-  "_spec": "cheerio@^0.22.0",
-  "_where": "C:\\Users\\Moss\\Desktop\\tesi\\lighthouse\\node_modules\\url-metadata",
-  "author": {
-    "name": "Matt Mueller",
-    "email": "mattmuelle@gmail.com",
-    "url": "mat.io"
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cheeriojs/cheerio.git"
   },
-  "bugs": {
-    "url": "https://github.com/cheeriojs/cheerio/issues"
+  "main": "./index.js",
+  "files": [
+    "index.js",
+    "lib"
+  ],
+  "engines": {
+    "node": ">= 0.6"
   },
-  "bundleDependencies": false,
   "dependencies": {
     "css-select": "~1.2.0",
     "dom-serializer": "~0.1.0",
@@ -25538,46 +25531,20 @@ module.exports={
     "lodash.reject": "^4.4.0",
     "lodash.some": "^4.4.0"
   },
-  "deprecated": false,
-  "description": "Tiny, fast, and elegant implementation of core jQuery designed specifically for the server",
   "devDependencies": {
     "benchmark": "^2.1.0",
     "coveralls": "^2.11.9",
     "expect.js": "~0.3.1",
     "istanbul": "^0.4.3",
-    "jquery": "^3.0.0",
     "jsdom": "^9.2.1",
+    "jquery": "^3.0.0",
     "jshint": "^2.9.2",
     "mocha": "^2.5.3",
     "xyz": "~0.5.0"
   },
-  "engines": {
-    "node": ">= 0.6"
-  },
-  "files": [
-    "index.js",
-    "lib"
-  ],
-  "homepage": "https://github.com/cheeriojs/cheerio#readme",
-  "keywords": [
-    "htmlparser",
-    "jquery",
-    "selector",
-    "scraper",
-    "parser",
-    "html"
-  ],
-  "license": "MIT",
-  "main": "./index.js",
-  "name": "cheerio",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/cheeriojs/cheerio.git"
-  },
   "scripts": {
     "test": "make test"
-  },
-  "version": "0.22.0"
+  }
 }
 
 },{}],129:[function(require,module,exports){
@@ -34430,49 +34397,37 @@ utils.intFromLE = intFromLE;
 arguments[4][59][0].apply(exports,arguments)
 },{"buffer":80,"dup":59}],190:[function(require,module,exports){
 module.exports={
-  "_from": "elliptic@^6.5.3",
-  "_id": "elliptic@6.5.3",
-  "_inBundle": false,
-  "_integrity": "sha512-IMqzv5wNQf+E6aHeIqATs0tOLeOTwj1QKbRcS3jBbYkl5oLAserA8yJTT7/VyHUYG91PRmPyeQDObKLPpeS4dw==",
-  "_location": "/elliptic",
-  "_phantomChildren": {},
-  "_requested": {
-    "type": "range",
-    "registry": true,
-    "raw": "elliptic@^6.5.3",
-    "name": "elliptic",
-    "escapedName": "elliptic",
-    "rawSpec": "^6.5.3",
-    "saveSpec": null,
-    "fetchSpec": "^6.5.3"
-  },
-  "_requiredBy": [
-    "/browserify-sign",
-    "/create-ecdh"
+  "name": "elliptic",
+  "version": "6.5.3",
+  "description": "EC cryptography",
+  "main": "lib/elliptic.js",
+  "files": [
+    "lib"
   ],
-  "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.5.3.tgz",
-  "_shasum": "cb59eb2efdaf73a0bd78ccd7015a62ad6e0f93d6",
-  "_spec": "elliptic@^6.5.3",
-  "_where": "C:\\Users\\Moss\\Desktop\\tesi\\lighthouse\\node_modules\\browserify-sign",
-  "author": {
-    "name": "Fedor Indutny",
-    "email": "fedor@indutny.com"
+  "scripts": {
+    "jscs": "jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js",
+    "jshint": "jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js",
+    "lint": "npm run jscs && npm run jshint",
+    "unit": "istanbul test _mocha --reporter=spec test/index.js",
+    "test": "npm run lint && npm run unit",
+    "version": "grunt dist && git add dist/"
   },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:indutny/elliptic"
+  },
+  "keywords": [
+    "EC",
+    "Elliptic",
+    "curve",
+    "Cryptography"
+  ],
+  "author": "Fedor Indutny <fedor@indutny.com>",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/indutny/elliptic/issues"
   },
-  "bundleDependencies": false,
-  "dependencies": {
-    "bn.js": "^4.4.0",
-    "brorand": "^1.0.1",
-    "hash.js": "^1.0.0",
-    "hmac-drbg": "^1.0.0",
-    "inherits": "^2.0.1",
-    "minimalistic-assert": "^1.0.0",
-    "minimalistic-crypto-utils": "^1.0.0"
-  },
-  "deprecated": false,
-  "description": "EC cryptography",
+  "homepage": "https://github.com/indutny/elliptic",
   "devDependencies": {
     "brfs": "^1.4.3",
     "coveralls": "^3.0.8",
@@ -34489,32 +34444,15 @@ module.exports={
     "jshint": "^2.10.3",
     "mocha": "^6.2.2"
   },
-  "files": [
-    "lib"
-  ],
-  "homepage": "https://github.com/indutny/elliptic",
-  "keywords": [
-    "EC",
-    "Elliptic",
-    "curve",
-    "Cryptography"
-  ],
-  "license": "MIT",
-  "main": "lib/elliptic.js",
-  "name": "elliptic",
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/indutny/elliptic.git"
-  },
-  "scripts": {
-    "jscs": "jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js",
-    "jshint": "jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js",
-    "lint": "npm run jscs && npm run jshint",
-    "test": "npm run lint && npm run unit",
-    "unit": "istanbul test _mocha --reporter=spec test/index.js",
-    "version": "grunt dist && git add dist/"
-  },
-  "version": "6.5.3"
+  "dependencies": {
+    "bn.js": "^4.4.0",
+    "brorand": "^1.0.1",
+    "hash.js": "^1.0.0",
+    "hmac-drbg": "^1.0.0",
+    "inherits": "^2.0.1",
+    "minimalistic-assert": "^1.0.0",
+    "minimalistic-crypto-utils": "^1.0.0"
+  }
 }
 
 },{}],191:[function(require,module,exports){
@@ -114866,167 +114804,304 @@ function extend() {
 }
 
 },{}],449:[function(require,module,exports){
-	const urlMetadata = require('url-metadata');
-	var category = [];
-	var prevTab = null;
-	var isAllowed = false;
-	function init(){
-		listener();
-	}
+const urlMetadata = require('url-metadata');
+var category = [];
+var prevTab = null;
+var isAllowed = false;
+function init(){
+	listener();
+}
 
 
-	async function listener(){
-		
-		var queue = [];
-		chrome.webRequest.onResponseStarted.addListener(function(response){
-		var initiator = new URL(response.initiator);
-		var url = new URL(response.url);
-		if(initiator.hostname !== url.hostname){
-	    	const responseDetails = {
-	    		"type" : 'thirdParty',
-	    		"response" : response,
-	    		"url" : response.originUrl
-	    	};
-	    	if(response.tabId >=0){
-		    	queue.push(responseDetails);
-		    	processEvent(queue).then();
-  				return true;
-	    	}
-		}
-	},
-	{
- 	urls: ["<all_urls>"]
-	},
-	["responseHeaders"]);
+async function listener(){
 
-	chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
-		/*if(tab.protocol = 'chrome'){
-			isAllowed = false;
-		}else{
-			isAllowed = true;
-		}*/
-		console.log('inizio');
-		console.log(tab);
-		const eventDetails = {
-    		"type" : 'firstParty',
-    		"data" : {
-    			tabId,
-    			changeInfo,
-    			tab
-    		}
-    	};
-	    	queue.push(eventDetails);
-	    	processEvent(queue).then();
-  			return true;
-    });
-
-	}
-
-	async function processEvent(queue){
-		
-    	
-		var p = await processHeader(queue);
-		return p;
-	}
-
-	async function processHeader(queue,ignore = false){
-		var processingQueue;
-		if (processingQueue && !ignore) {
-	      return;
-	    }
-	    if (queue.length >= 1) {
-
-	    	try{
-		        const nextEvent = queue.shift();
-
-		        processingQueue = true;
-
-		        switch (nextEvent.type) {
-		          case 'firstParty':
-		          	var protocol = nextEvent.data.tab.url.split(":")[0];
-		          	if(protocol != 'chrome' && protocol != 'chrome-extension'){
-				        if(prevTab){
-					       	if(prevTab.id != nextEvent.data.tabId){
-					     		prevTab = null;
-			        	  	}
-				        }
-			            await setHeaderFirstParty(
-			              nextEvent.data.tabId,
-			              nextEvent.data.changeInfo,
-			              nextEvent.data.tab
-			            );
-					}
-		          break;
-		          case 'thirdParty':
-
-		            await setHeaderThirdParty(nextEvent.response);
-		          break;
-		          default:
-		            throw new Error(
-		              'An event must be of type firstparty or thirdparty.'
-		            );
-		        }
-			}catch (e) {
-        		console.warn('Exception found in queue process', e);
-      		}
-
-		    await processHeader(queue,true);
-	    } else {
-	      processingQueue = false;
-	    }
-
-	    return true;
-	}
-
-	async function setHeaderThirdParty(response){
-  		let urlResponse = response.url;
-    	chrome.tabs.get(response.tabId, (tab) =>{
-			if(tab.url !== urlResponse && tab.active){ //escludo il sito di prima parte considerato in seguito
-				chrome.cookies.getAll({url: urlResponse}, async function(cookies){	
-   				const details = {
-  					"type" : 'thirdParty',
- 					"data" : response,
- 					"cookies" : (cookies.length>0) ? cookies : ''
-	 			};
-
-	 			await saveParty(details,tab).then();
-  				return true;
-	 	
-				});
+	var queue = [];
+	var content;
+	var contentType;
+	var headercontent;
+	var type;
+	chrome.webRequest.onResponseStarted.addListener(function(response){
+	//console.log(response.initiator);
+	if(response.initiator){
+		var protocol = response.initiator.split(":")[0];
+		if(protocol != 'chrome' && protocol != 'chrome-extension'){
+			//console.log(response);
+			//console.log(response.url);
+			for(var header of response.responseHeaders){
+				if(header['name'] == 'content-type'){
+					content = header['value'];
+					contentType= content.split(';')[0];
+				}
+				if(header['name'] == 'content-disposition'){
+					headercontent = header['value'];
+					type = headercontent.split(';')[0];
+				}
 			}
-	 	});
+
+			//console.log(response.type);
+			//console.log(contentType);
+			//console.log(type);
+			if(response.type = 'xmlhttprequest' && contentType == 'application/json' && type != 'attachment' && response.method == 'GET'){ //filtro soltanto quelle di tipo XHR
+				//console.log(response);
+				//console.log('entra');
+				let urlRes = response.url;
+				let method = response.method;
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = async function() {
+						var dati = null;
+						if (this.readyState == 4 && this.status == 200) {
+								var ris = this.responseText;
+								var obj;
+								var json = false;
+								try {
+									obj = JSON.parse(ris);
+									json = true;
+								} catch (e) {
+									//obj = ris;
+									json = false;
+								}
+								if (!json) {
+									obj = ris;
+								}
+								console.log('pacchetto in entrata: ');
+								console.log(response);
+								console.log('contenuto');
+								console.log(obj);
+								//var i = 0;
+
+						}
+							return;
+					};
+					xhttp.open(method,urlRes, true);
+					xhttp.send();
+			}
+			if(response.initiator){
+				var initiator = new URL(response.initiator);
+				var url = new URL(response.url);
+				if(initiator.hostname !== url.hostname){
+						const responseDetails = {
+							"type" : 'thirdParty',
+							"response" : response,
+							"url" : response.originUrl
+						};
+						if(response.tabId >=0){
+							queue.push(responseDetails);
+							processEvent(queue).then();
+							return true;
+						}
+				}
+			}
+		}
 	}
-	async function saveParty(details,tab){
-		var p = await setParty(details,tab);
-		return p;
+},
+{
+urls: ["<all_urls>"]
+},
+["responseHeaders"]);
+
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
+	/*if(tab.protocol = 'chrome'){
+		isAllowed = false;
+	}else{
+		isAllowed = true;
+	}*/
+	//console.log('inizio');
+	//console.log(tab);
+	var protocol = tab.url.split(":")[0];
+	if(protocol != 'chrome' && protocol != 'chrome-extension'){
+		const eventDetails = {
+				"type" : 'firstParty',
+				"data" : {
+					tabId,
+					changeInfo,
+					tab
+				}
+			};
+			queue.push(eventDetails);
+			processEvent(queue).then();
+			return true;
 	}
+	});
 
-	async function setHeaderFirstParty(tabId, changeInfo, tab){
-		var prevUrl =(prevTab) ? new URL(prevTab.url) : new URL(tab.url);
-		if((changeInfo.url || prevTab == null) && tab.active){
+	/*chrome.webRequest.onBeforeRequest.addListener(
+	    function(details)
+	    {
+					console.log('pacchetti uscenti');
+	        console.log(details);
+	    },
+	    {urls: ["<all_urls>"]},
+	    ['requestBody']
+	);*/
+	chrome.webRequest.onBeforeRequest.addListener(
+    async function(details) {
+        if(details.method == "POST"){
+        // Use this to decode the body of your post
+				if(details.requestBody){
+					console.log('Pacchetto in uscita: ');
+					console.log(details);
+					var postedString;
+					if(details.requestBody.raw){
+            postedString = decodeURIComponent(String.fromCharCode.apply(null, new Uint8Array(details.requestBody.raw[0].bytes)));
+					}else{
+						if(details.requestBody.formData)
+							postedString = decodeURIComponent(String.fromCharCode.apply(null, new Uint8Array(details.requestBody.formData.bytes)));
+						else {
+							postedString = decodeURIComponent(String.fromCharCode.apply(null, new Uint8Array(details.requestBody.bytes)));
 
-			var url =(changeInfo.url) ? new URL(changeInfo.url) : new URL('https://prova.com');
-			if(url.hostname != prevUrl.hostname && tab.status === 'complete'){
+						}
+					}
+					//console.log(postedString);
 
-				let urlTab = tab.url;
-				chrome.cookies.getAll({url: urlTab}, async function(cookies){
-					const details = {
-				    	"type" : 'firstParty',
-				    	"data" : {tabId, changeInfo, tab},
-				    	"cookies" : (cookies.length>0) ? cookies : ''
-			 	    };
+						//var json = JSON.parse(postedString);
+						var obj;
+						var json = false;
+						try {
+							obj = JSON.parse(postedString);
+							json = true;
+						} catch (e) {
+							json = false;
+						}
+						if(!json){
+							obj = postedString;
+
+						}
+						console.log('contenuto');
+           console.log(obj);
+					 if(obj){
+						 let web;
+						 let urlIn = new URL(details.initiator);
+						 let notPresent = await isNotPresent(urlIn.hostname);
+						 if(!notPresent){
+							 web = await getWebsite(urlIn.hostname);
+							if(!('xhrPackets' in web)){
+								web['xhrPackets'] = [];
+							}
+							if(typeof obj == 'object' || typeof obj == 'array')
+							 	web['xhrPackets'].push(obj);
+								await updateDb(urlIn.hostname,web);
+						 	}
+						 console.log('non vuoto');
+					 }
+				 }
+			 }
+    },
+    {urls: ["<all_urls>"]},
+    ["blocking", "requestBody"]
+);
+
+}
+
+async function processEvent(queue){
+	var p = await processHeader(queue);
+	return p;
+}
+
+async function processHeader(queue,ignore = false){
+	var processingQueue;
+	if (processingQueue && !ignore) {
+			return;
+		}
+		if (queue.length >= 1) {
+
+			try{
+					const nextEvent = queue.shift();
+
+					processingQueue = true;
+
+					switch (nextEvent.type) {
+						case 'firstParty':
+							var protocol = nextEvent.data.tab.url.split(":")[0];
+							if(protocol != 'chrome' && protocol != 'chrome-extension'){
+								if(prevTab){
+									if(prevTab.id != nextEvent.data.tabId){
+									prevTab = null;
+										}
+								}
+									await setHeaderFirstParty(
+										nextEvent.data.tabId,
+										nextEvent.data.changeInfo,
+										nextEvent.data.tab
+									);
+							}
+						break;
+						case 'thirdParty':
+							if(nextEvent.response)
+								await setHeaderThirdParty(nextEvent.response);
+						break;
+						default:
+							throw new Error(
+								'An event must be of type firstparty or thirdparty.'
+							);
+					}
+		}catch (e) {
+					console.warn('Exception found in queue process', e);
+				}
+
+			await processHeader(queue,true);
+		} else {
+			processingQueue = false;
+		}
+
+		return true;
+}
+
+async function setHeaderThirdParty(response){
+	if(response){
+			let urlResponse = response.url;
+			chrome.tabs.get(response.tabId, (tab) =>{
+			if (chrome.runtime.lastError) {
+				console.log(chrome.runtime.lastError.message);
+			}else{
+				if(tab.url !== urlResponse){ //&& tab.active){ //escludo il sito di prima parte considerato in seguito
+					chrome.cookies.getAll({url: urlResponse}, async function(cookies){
+						const details = {
+							"type" : 'thirdParty',
+						"data" : response,
+						"cookies" : (cookies.length>0) ? cookies : ''
+					};
 
 					await saveParty(details,tab).then();
+						return true;
 
-		  			return;
-
-				});
-				return;
+					});
+				}
 			}
+		});
+	}
+}
+async function saveParty(details,tab){
+	var p = await setParty(details,tab);
+	return p;
+}
+
+async function setHeaderFirstParty(tabId, changeInfo, tab){
+	var prevUrl =(prevTab) ? new URL(prevTab.url) : new URL(tab.url);
+	if((changeInfo.url || prevTab == null)){ //&& tab.active){
+
+		var url =(changeInfo.url) ? new URL(changeInfo.url) : new URL('https://prova.com');
+		if(url.hostname != prevUrl.hostname && tab.status === 'complete'){
+
+			let urlTab = tab.url;
+			chrome.cookies.getAll({url: urlTab}, async function(cookies){
+				const details = {
+						"type" : 'firstParty',
+						"data" : {tabId, changeInfo, tab},
+						"cookies" : (cookies.length>0) ? cookies : ''
+					};
+
+				await saveParty(details,tab).then();
+
+					return;
+
+			});
+			return;
 		}
 	}
+}
 
-	async function setParty(event,tab){
+async function setParty(event,tab){
+	var protocol = tab.url.split(":")[0];
+	if(tab.id>0 && protocol != 'chrome' && protocol != 'chrome-extension'){
 		let data = event.data;
 		let cookies = (event.cookies) ? event.cookies : '';
 		let tabId = ((data.tabId) ? data.tabId : data.response.tabId);
@@ -115034,12 +115109,11 @@ function extend() {
 			let urlTab = '';
 			switch(event.type){
 				case 'thirdParty':
-
 					await setThirdPartyToStore(tab, data,cookies);
 
 				break;
 				case 'firstParty':
-					
+
 					await setFirstPartyToStore(tab,cookies);
 
 				break;
@@ -115047,136 +115121,106 @@ function extend() {
 			}
 
 			return true;
+		}else {
+			return false;
+		}
 
-	}
+}
 
-	async function setThirdPartyToStore(tab, data, cookies){
-		urlTab = new URL(tab.url);
-		const urlTarget = new URL(data.url);
-		if(data.url && data.initiator && !(urlTarget.hostname.includes(urlTab.hostname))){
+async function setThirdPartyToStore(tab, data, cookies){
+	urlTab = new URL(tab.url);
+	const urlTarget = new URL(data.url);
+	if(data.url && data.initiator && !(urlTarget.hostname.includes(urlTab.hostname))){
 
-			const urlOrigin = new URL(data.initiator);
-			const urlFirstparty = new URL(tab.url);
-			party = {
-				//"hostname": urlFirstparty.hostname,
-				"target" : urlTarget.hostname,
-				"origin" : urlOrigin.hostname,
-				"requestTime" : data.timeStamp,
-				"firstParty" : false,
-				"cookiesThirdParty" : (cookies.length>0) ? cookies : ''
-			};
-			if(urlFirstparty.hostname!=party.origin){
-				await storeParty(urlFirstparty.hostname,party);
-			}else{
-				await storeParty(party.origin,party);
+		const urlOrigin = new URL(data.initiator);
+		const urlFirstparty = new URL(tab.url);
+		party = {
+			//"hostname": urlFirstparty.hostname,
+			"target" : urlTarget.hostname,
+			"origin" : urlOrigin.hostname,
+			"requestTime" : data.timeStamp,
+			"firstParty" : false,
+			"cookiesThirdParty" : (cookies.length>0) ? cookies : ''
+		};
+		if(urlFirstparty.hostname!=party.origin){
+			await storeParty(urlFirstparty.hostname,party);
+		}else{
+			await storeParty(party.origin,party);
 
-			}
 		}
 	}
+}
 
-	async function getBaseUrl(url){
-		var pathArray = url.split( '/' );
-		var protocol = pathArray[0];
-		var host = pathArray[2];
-		var url = protocol + '//' + host;
-		return url;
-	}
+async function getBaseUrl(url){
+	var pathArray = url.split( '/' );
+	var protocol = pathArray[0];
+	var host = pathArray[2];
+	var url = protocol + '//' + host;
+	return url;
+}
 
-	async function setCategory(obj){
-		category.push(obj);
-	}
+async function setCategory(obj){
+	category.push(obj);
+}
 
-	async function getCategory(title,description,keywords,baseUrl){
-		//TODO TRADUZIONE TESTO
-		var string = title +' '+description+' '+keywords.toString();
-			var xhttp = new XMLHttpRequest();
-		  	xhttp.onreadystatechange = async function() {
-		  		var dati = null;
-			    if (this.readyState == 4 && this.status == 200) {
-			      var ris = this.responseText;
-			      var obj = JSON.parse(ris);
-			      var i = 0;
-			      while(obj.categories[i].score>=0.1){
-			      	var dati = obj.categories[i].name;
-				    var score = obj.categories[i].score;
-				    await setCategory(obj.categories[i]);
-				    i++;
-			      }
-
-			    }
-			      return;
-		  	};
-		  	string = string.replace(/\u2019/g,'');
-			xhttp.open("GET", "https://api.dandelion.eu/datatxt/cl/v1/?text="+string+"&model=54cf2e1c-e48a-4c14-bb96-31dc11f84eac&token=5f4761a82e7b4a96a729fb9ae6dc7fc0", true);
-	  		xhttp.send();
-	  	return;
-	}
-
-		async function getTypeWebsite(title,description,keywords){
-		var typeWebsite;
-		var string = title +' '+description+' '+keywords.toString();
-	  	string = string.replace(/\u2019/g,' ').toLowerCase();
-	  	//blog
-	  	if(string.includes("blog")){
-	  		typeWebsite = "Blog";
-	  	}
-	  	//news_media
-	  	if(string.includes("news") && string.includes("media")){
-	  		typeWebsite = "News";
-	  	}
-	  	//Streaming_video
-	  	if(string.includes("streaming") || string.includes("film")){
-	  		typeWebsite = "TV/Video streaming";
-	  	}
-
-	  	//Social media
-	  	//TODO SOCIAL MEDIA
-	  	/*if(string.includes("streaming") || string.includes("film")){
-	  		typeWebsite = "TV/Video streaming";
-	  	}*/
-
-	  	//e-commerce
-	  	//TODO TRADUZIONE INGLESE
-	  	if(string.includes("shop")){
-	  		typeWebsite = "E-commerce";
-	  	}
-	  	return typeWebsite;
-	}
-
-	async function setFirstPartyToStore(tab,cookies){
-		var typeWebsite = '';
-		urlTab = new URL(tab.url);
-		var baseUrl = await getBaseUrl(tab.url);
-		console.log('url-base: '+baseUrl);
-			urlMetadata(baseUrl).then(
-  			async function (metadata) { // success handler
-    			let newDate = new Date(Date.now());
-    			if(metadata.title || metadata.description || metadata.keywords){
-
-	    			await getCategory(metadata.title,metadata.description,metadata.keywords,baseUrl);
-	    			typeWebsite = await getTypeWebsite(metadata.title,metadata.description,metadata.keywords);
-	    		}
-				if(urlTab.hostname){
-					party = {
-						"hostname": urlTab.hostname,
-						"iconURL" : tab.favIconUrl,
-						"firstParty" : true,
-						"requestTime" : newDate,
-						"category" : category,
-						"type" : typeWebsite,
-						"cookiesFirstParty" : (cookies.length>0) ? cookies : ''
-					};
-					await storeParty(party.hostname,party);
+async function getCategory(baseUrl){
+		var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = async function() {
+				var dati = null;
+				if (this.readyState == 4 && this.status == 200) {
+					var ris = this.responseText;
+					var obj = JSON.parse(ris);
+					var categories = obj.data[0];
+					var i = 0;
+					console.log(obj);
+					for(var cat of categories.categories){
+						if(cat.score>=0.1)
+							await setCategory(cat);
+					}
 				}
-  			},
-  			function (error) { // failure handler
-    			console.log(error)
-  			});
-		prevTab = tab;
-		category = [];
-		obj = [];
+					return;
+			};
+			var key = config.access_key+':'+config.secret_key;
+			var encoded_key = window.btoa(key);
+			var url_encoded = window.btoa(baseUrl)
+			xhttp.open("GET", "https://api.webshrinker.com/categories/v3/<"+url_encoded+">", true);
+			xhttp.setRequestHeader("Authorization",'Basic '+ encoded_key);
 		return;
-	}
+}
+
+async function setFirstPartyToStore(tab,cookies){
+	var typeWebsite = '';
+	let urlTab = new URL(tab.url);
+	let urlIcon = tab.favIconUrl;
+	var baseUrl = await getBaseUrl(tab.url);
+	//console.log('url-base: '+baseUrl);
+		urlMetadata(baseUrl).then(
+			async function (metadata) { // success handler
+				let newDate = new Date(Date.now());
+				//if(metadata.title || metadata.description || metadata.keywords){
+
+					await getCategory(baseUrl);
+				//}
+			if(urlTab.hostname){
+				party = {
+					"hostname": urlTab.hostname,
+					"iconURL" : (urlIcon) ? urlIcon : 'chrome://favicon',
+					"firstParty" : true,
+					"requestTime" : newDate,
+					"category" : category,
+					"cookiesFirstParty" : (cookies.length>0) ? cookies : ''
+				};
+				await storeParty(party.hostname,party);
+			}
+			},
+			function (error) { // failure handler
+				console.log(error)
+			});
+	prevTab = tab;
+	category = [];
+	obj = [];
+	return;
+}
 
 init();
 

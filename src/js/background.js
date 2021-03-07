@@ -27,8 +27,6 @@ async function apri() {
 	    chrome.tabs.update(tabprova.id, {active: true});
 	  }
     }
-    
+
     return boolean || false
   }
-
-
