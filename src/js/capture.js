@@ -2,8 +2,53 @@ const urlMetadata = require('url-metadata');
 var category = [];
 var prevTab = null;
 var isAllowed = false;
+var cookies_db;
+
 function init(){
+	getCSV();
 	listener();
+
+}
+
+
+async function getCSV(){
+	const fileUrl = chrome.runtime.getURL("libs/open-cookie-database.csv");
+	fetch(fileUrl)
+	.then(response => response.text())
+	.then(async function(text){
+		await parseCSV(text).then();
+		return;
+	});
+}
+
+async function parseCSV(csv){
+
+	//TODO DA OTTIMIZZARE PER EVITARE DI LEGGERE RIGHE SFASATE O ERRATE
+	var csvJSON;
+	var lines=csv.split("\n");
+
+  var result = {};
+
+  var headers=lines[0].split(",");
+
+  for(var i=1;i<lines.length;i++){
+
+	  var obj = {};
+		let linea = lines[i].replace(/["']/g, "");
+		if(lines[i] && lines[i] != ''){
+		  var currentline=linea.split(",");
+		  for(var j=0;j<headers.length;j++){
+			  obj[headers[j]] = currentline[j];
+		  }
+		}
+		if(obj){
+			//console.log(obj['Cookie / Data Key name']);
+			let key = obj['Cookie / Data Key name'];
+	  	result[key]= obj;
+		}
+  }
+	cookies_db = result;
+	//csvJSON = JSON.stringify(result)
 }
 
 
@@ -191,6 +236,8 @@ async function processEvent(queue){
 }
 
 async function processHeader(queue,ignore = false){
+	console.log('csv-----');
+	console.log(cookies_db);
 	var processingQueue;
 	if (processingQueue && !ignore) {
 			return;
@@ -248,8 +295,14 @@ async function setHeaderThirdParty(response){
 			}else{
 				if(tab.url !== urlResponse){ //&& tab.active){ //escludo il sito di prima parte considerato in seguito
 					chrome.cookies.getAll({url: urlResponse}, async function(cookies){
+						if(cookies.length>0){
+							cookies.forEach(element => {
+								element.category = (cookies_db[element.name]) ? cookies_db[element.name].Category : '';
+								element.description = (cookies_db[element.name]) ? cookies_db[element.name].Description : '';
+							});
+						}
 						const details = {
-							"type" : 'thirdParty',
+						"type" : 'thirdParty',
 						"data" : response,
 						"cookies" : (cookies.length>0) ? cookies : ''
 					};
@@ -277,6 +330,12 @@ async function setHeaderFirstParty(tabId, changeInfo, tab){
 
 			let urlTab = tab.url;
 			chrome.cookies.getAll({url: urlTab}, async function(cookies){
+				if(cookies.length>0){
+					cookies.forEach(element => {
+						element.category = (cookies_db[element.name]) ? cookies_db[element.name].Category : '';
+						element.description = (cookies_db[element.name]) ? cookies_db[element.name].Description : '';
+					});
+				}
 				const details = {
 						"type" : 'firstParty',
 						"data" : {tabId, changeInfo, tab},
@@ -387,14 +446,10 @@ async function setFirstPartyToStore(tab,cookies){
 	let urlTab = new URL(tab.url);
 	let urlIcon = tab.favIconUrl;
 	var baseUrl = await getBaseUrl(tab.url);
-	//console.log('url-base: '+baseUrl);
 		urlMetadata(baseUrl).then(
 			async function (metadata) { // success handler
 				let newDate = new Date(Date.now());
-				//if(metadata.title || metadata.description || metadata.keywords){
-
 					await getCategory(baseUrl);
-				//}
 			if(urlTab.hostname){
 				party = {
 					"hostname": urlTab.hostname,

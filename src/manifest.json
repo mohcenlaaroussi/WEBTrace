@@ -21,6 +21,11 @@
     	"webRequestBlocking"
 	],
 
+
+  "web_accessible_resources": [
+    "../Open-Cookie-Database/*.csv"
+  ],
+
 	"browser_action": {},
 
 	"background": {

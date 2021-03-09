@@ -1,9 +1,5 @@
 
-
-
-
 chrome.runtime.onMessage.addListener(update);
-
 
 async function init(){
 	var websites = {};
@@ -12,8 +8,6 @@ async function init(){
 		websites[web] = app[web];
 		await drawOnIndex(websites, website = null);
 }
-
-
 
 async function update(message, sender, sendResponse){
 	var websites = message.websites;
@@ -25,7 +19,6 @@ async function update(message, sender, sendResponse){
 		await drawOnIndex(websites,website);
 	}
 }
-
 
 async function getNodesLinks(websites){
 	let nodes = [];
@@ -47,6 +40,8 @@ async function getNodesLinks(websites){
 			site = await getWebsite(website);
 			console.log('---------SITO WEB CORRENTE---------');
 			console.log(site);
+
+
 			cookiesFirstParty = [];
 			cookiesThirdParty = [];
 			partyCookies = [];
@@ -157,4 +152,5 @@ async function drawOnIndex(websites, website){
 
 window.onload = () => {
   init();
+	//getCSV();
 };
