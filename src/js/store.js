@@ -35,9 +35,7 @@
 				console.log(sito);
 	      output[sito.hostname] = sito;
 	    }
-			console.log('OUTPUT');
- 		 	for(let pp in output)
-				console.log(output[pp]);
+			
     	return output;
   	}
 
@@ -58,8 +56,6 @@
     	for (const key in website) {
       		website[key] = convertBooleans(website[key]);
     	}
-			console.log('SITO DA AGGIUNGERE: ');
-			console.log(website);
     	return await db.websites.put(website);
   	}
 
@@ -114,8 +110,6 @@
 		if(!await isDuplicate(website['thirdPartySites'],party.target)){
 			website['thirdPartySites'].push(obj);
 			await updateDb(hostname,website);
-			console.log('DB AGGIORNATO: --->');
-			console.log(db.websites.get(hostname));
 		}
 		return website;
   	}
@@ -138,7 +132,6 @@
 					website[key] = party[key];
 				}
 				if(notPresent){
-					console.log('CIAOOOOOOOOOOOOOOOOOOOOOAAA');
 					await writeDb(website);
 				}
 				if(website['firstPartyInserted'] == 0){
@@ -154,6 +147,8 @@
 					console.log ("date not updated");
 				});
 			}
+			console.log('DB AGGIORNATO: --->');
+			console.log(db.websites.get(hostname));
 			return website;
 	  	}
 

@@ -126,19 +126,21 @@ function draw() {
 	//console.log(loaded);
 	//console.log(imgs.length == cells.length);
 	if (loaded || imgs.length == cells.length) {
-
-		connections.forEach(conn => {
-	    	if (conn.isInside(mouseX, mouseY)) conn.flags.hover = true;
-	    	else conn.flags.hover = false;
-	    	conn.render();
-	  	})
+		var prova = [];
+		cells.forEach(cell => {
+			if(cell.isInside(mouseX, mouseY)){
+				connections.forEach(conn => {
+						if (conn.cell1.website.hostname == cell.website.hostname || conn.cell2.website.hostname == cell.website.hostname){
+							 conn.flags.hover = true;
+							 prova.push(conn);
+						} else{ conn.flags.hover = false;}
+							conn.render();
+				});
+			}
+	  })
 
 	  	let i = -1;
 		cells.forEach(cell => {
-				//console.log(cell.website[0]);
-
-		//	console.log('provaa:');
-		//	console.log(cell);
 			let hostname;
 			let img;
 			++i;

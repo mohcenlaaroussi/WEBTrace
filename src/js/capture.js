@@ -236,8 +236,8 @@ async function processEvent(queue){
 }
 
 async function processHeader(queue,ignore = false){
-	console.log('csv-----');
-	console.log(cookies_db);
+	//console.log('csv-----');
+	//console.log(cookies_db);
 	var processingQueue;
 	if (processingQueue && !ignore) {
 			return;

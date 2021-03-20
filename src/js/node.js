@@ -23,6 +23,7 @@ class Node {
       modal.removeAttribute('class');
       modal.classList.add("one");
       body.classList.add("modal-active");
+      document.getElementById("website").innerHTML = this.website.hostname;
 
   }
 
