@@ -14,13 +14,20 @@ class Link {
     this.render_line();
   }
 
+  set_flag_hover(bool){
+    this.flags.hover = bool;
+  }
+
   render_line() {
     //stroke(0);
     //strokeWeight(2);
     if (this.flags.hover) {
-      line(this.cell1.x, this.cell1.y, this.cell2.x, this.cell2.y);  
-      stroke(200, 0, 0);
-      strokeWeight(3);
+      pop();
+      line(this.cell1.x, this.cell1.y, this.cell2.x, this.cell2.y);
+      //strokeWeight(2);
+      stroke('#fff');
+      push();
+
     }
   }
 

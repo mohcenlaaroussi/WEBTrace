@@ -31,5 +31,5 @@
 	"background": {
     	"page": "background.html"
   	},
-  	"content_security_policy": "script-src 'self' https://unpkg.com/dexie@latest/dist/dexie.js https://cdn.jsdelivr.net/npm/p5@1.1.9/lib/p5.js 'sha256-F5iPK2ztrqVl3bmpuNZqAQ7rfR8RS3oVFofZa1Ny6Tc='; object-src 'self'"
+  	"content_security_policy": "script-src 'self' https://unpkg.com/dexie@latest/dist/dexie.js https://cdn.jsdelivr.net/npm/p5@1.1.9/lib/p5.js 'sha256-gQucWiMITJlEjOGCHB9FbFvyeRmdmnaoeP8pPFIAsL0='; object-src 'self'"
 }

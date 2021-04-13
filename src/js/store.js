@@ -16,10 +16,6 @@
 		return await db.websites.get(hostname);
 	}
 
-	async function getWebsite(hostname){
-		return await db.websites.get(hostname);
-	}
-
 	async function getrows(){
   	return db.websites.where('hostname').notEqual(' ').toArray();
 	}
@@ -35,7 +31,7 @@
 				console.log(sito);
 	      output[sito.hostname] = sito;
 	    }
-			
+
     	return output;
   	}
 
@@ -101,18 +97,31 @@
 		}
 		if(!('thirdPartySites' in website)){
 			website['thirdPartySites'] = [];
+			website['nThirdPartyCookies'] = 0;
 		}
 		let obj = {
 			"hostname": party.target,
+			"firstParty": hostname,
 			"domain" : (party.cookiesThirdParty.length>0) ? party.cookiesThirdParty[0].domain : '',
 			"cookies": (party.cookiesThirdParty.length>0) ? party.cookiesThirdParty : ''
 		};
 		if(!await isDuplicate(website['thirdPartySites'],party.target)){
-			website['thirdPartySites'].push(obj);
+			website['nThirdPartyCookies'] += obj.cookies.length;
+			website['thirdPartySites'] = insert(obj, website['thirdPartySites']);
+			//website['thirdPartySites'].push(obj);
 			await updateDb(hostname,website);
 		}
 		return website;
   	}
+
+
+		function insert(element, array) {
+			array.push(element);
+		  array.sort(function(a, b) {
+	  	return b.cookies.length-a.cookies.length;
+		 });
+		 return array;
+	 		}
 
 	  async function storeFirstParty(hostname,party){
 	  	var website = {};

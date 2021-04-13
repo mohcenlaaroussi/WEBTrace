@@ -4,33 +4,243 @@
 	<title>Lighthouse</title>
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<script type="text/javascript" src="js/content.js"></script>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/chart.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/p5@1.1.9/lib/p5.js"></script>
 	<script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
-	    <script src="js/store.js"></script>
-    <script src="js/main.js"></script>
+	<script src="js/store.js"></script>
+	<script src="js/main.js"></script>
 	<script src="js/node.js"></script>
-    <script src="js/link.js"></script>
-    <script src="js/sketch.js"></script>
+	<script src="js/link.js"></script>
+  <script src="js/sketch.js"></script>
 
 
 </head>
-<body>
-	<div id ="container">
+<body class="text-center vsc-initialized">
 
-		<div id="modal-container">
-	  		<div class="modal-background">
-			    <div class="modal">
-						<div class="content">
-							<h2 id = "website"></h2>
-							<p>Hear me roar.</p>
-							<svg class="modal-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" preserveAspectRatio="none">
-												<rect x="0" y="0" fill="none" width="226" height="162" rx="3" ry="3"></rect>
-											</svg>
-						</div>
+	<div class="navbar navbar-expand-md navbar-dark bg-dark fixed-top justify-content-md-center">
+		<header class="masthead mb-auto">
+		        <div class="inner">
+		          <h3 class="masthead-brand">Cover</h3>
+		          <nav class="nav nav-masthead justify-content-center">
+		            <a class="nav-link active" href="index.html">Home</a>
+		            <a class="nav-link" href="prova.html">Features</a>
+		          </nav>
+		        </div>
+		      </header>
+			</div>
 
-			    </div>
-		  </div>
-		</div>
+<!--#include file="include_head.html" -->
+			<div class="" id="graph">
+			</div>
+
+				<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+				  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				          <span aria-hidden="true">&times;</span>
+				        </button>
+				      </div>
+				      <div class="modal-body">
+								<!--<table id="sumTable" class="table table-striped">
+									<thead class="">
+											<tr>
+												<th scope="col">First party cookies</th>
+												<th scope="col">Third party cookies</th>
+												<th scope="col">Size of XHR packets</th>
+												<th scope="col">Number of XHR packets</th>
+											</tr>
+									</thead>
+										<tr>
+											<td></td><td></td><td></td><td></td>
+										</tr>
+										<!--<tr>
+											<<td></td><td></td><td></td><td></td>
+										</tr>-->
+										<!--<tr>
+											<td colspan="4">
+
+											</td>
+										</tr>
+								</table>-->
+								<div class="row">
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2" style="border-left: 0.25rem solid #343A40">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-uppercase mb-1">
+                                                First party cookies</div><hr>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="FirstCookies">$40,000</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2" style="border-left: 0.25rem solid #343A40">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-uppercase mb-1">
+                                                Third party cookies</div><hr>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="ThirdCookies">$215,000</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2" style="border-left: 0.25rem solid #343A40">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+																			<div class="col mr-2">
+																					<div class="text-xs font-weight-bold text-uppercase mb-1">
+																							Size of XHR packets</div><hr>
+																					<div class="h5 mb-0 font-weight-bold text-gray-800" id="sizeXHR">$215,000</div>
+																			</div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pending Requests Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-warning shadow h-100 py-2" style="border-left: 0.25rem solid #343A40">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-uppercase mb-1">
+                                                Number of XHR packets</div><hr>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="numberXHR">18</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+								<div class="container">
+
+								  <div class="row justify-content-center" style="padding:5px;">
+								    <!--<div class="col-sm" id="fhjd">
+											<div class="row">
+												<span style="text-transform:uppercase; padding:10px;text-align:center;"><b>Top cookies domains</b></span>
+											</div>
+								    </div>-->
+										<div class="col-sm-6">
+											<div class="card border-left-success shadow h-360 py-2 top3" style="border-left: 0.25rem solid #343A40">
+												<div class="card-body">
+													<h5 class="card-title">Top cookies domains</h5><hr>
+													<!--<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+													<a href="#" class="btn btn-primary">Go somewhere</a>-->
+													<table id="top3cookies" class="">
+														<thead class="thead-dark">
+
+														<tr>
+															<th>Domain</th>
+															<th>Cookies</th>
+														</tr>
+														</thead>
+														<tr>
+															<td></td><td></td>
+														</tr>
+														<tr>
+															<td></td><td></td>
+														</tr>
+														<tr>
+															<td></td><td></td>
+														</tr>
+													</table>
+												</div>
+											</div>
+										</div>
+										<div class="col-sm-6">
+											<div class="card border-left-success shadow h-360 py-2 top3" style="border-left: 0.25rem solid #343A40">
+												<div class="card-body">
+													<h5 class="card-title">Top XHR domains</h5><hr>
+													<!--<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+													<a href="#" class="btn btn-primary">Go somewhere</a>-->
+													<table id="top3xhr" class="">
+														<thead class="thead-dark">
+
+														<tr>
+															<th>Domain</th>
+															<th>Packets</th>
+														</tr>
+													</thead>
+
+														<tr>
+															<td></td><td></td>
+														</tr>
+														<tr>
+															<td></td><td></td>
+														</tr>
+														<tr>
+															<td></td><td></td>
+														</tr>
+													</table>
+												</div>
+											</div>
+										</div>
+								    <!--<div class="col-sm">
+											<div class="row">
+												<span style="text-transform:uppercase; padding:10px;text-align:center;"><b>Top XHR domains</b></span>
+
+											</div>
+
+								    </div>-->
+
+								  </div>
+									<div class="row">
+									<div class="col-xs-12" id="chartPie" style="height:400px; width:400px; margin:0 auto">
+										<canvas id="myChart"></canvas>
+
+									</div>
+									<!--<div class="col-md">
+
+									</div>-->
+								</div>
+									<div class="row">
+										<div class="col">
+										</div>
+
+									</div>
+								</div>
+				      </div>
+				      <div class="modal-footer">
+
+								<a href="#"  class="btn btn-primary btn-details" id="linkDetails">Details</a>
+				        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				        <!--<button type="button" class="btn btn-primary">Save changes</button>-->
+
+				      </div>
+				    </div>
+				  </div>
+				</div>
+
+
 	</div>
 </body>
 <script>
@@ -44,7 +254,7 @@ var modal = document.getElementsByClassName('modal-background');
 	console.log(event.target);
 
 	if (event.target == modal[0]) {
-		modal = document.getElementById('modal-container');
+		modal = document.getElementById('modal-containerr');
   	    var body = document.body;
     	//modal.classList.remove("four");
     	modal.classList.add("out");

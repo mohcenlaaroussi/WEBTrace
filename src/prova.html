@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Lighthouse</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<script type="text/javascript" src="js/content.js"></script>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
+  <script src="js/chart.js"></script>
+
+	<script src="js/store.js"></script>
+	<!--<script src="js/sketch.js"></script>-->
+  <script src="js/main.js"></script>
+  <script type="text/javascript" src="js/prova.js"></script>
+
+
+</head>
+<body class="text-center vsc-initialized">
+
+	<div class="navbar navbar-expand-md navbar-dark bg-dark fixed-top justify-content-md-center">
+		<header class="masthead mb-auto">
+		        <div class="inner">
+		          <h3 class="masthead-brand">Logo</h3>
+		          <nav class="nav nav-masthead justify-content-center">
+		            <a class="nav-link" href="index.html">Home</a>
+		            <a class="nav-link active" href="prova.html">Features</a>
+		          </nav>
+		        </div>
+		      </header>
+			</div>
+
+<!--#include file="include_head.html" -->
+      <main role="main" style="
+    margin-top: 25px;
+" class="containerr">
+              <div class="jumbotron">
+                <div class="col-sm-8 mx-auto">
+                  <section id="tabs" class="project-tab">
+                    <div class="container tablesCookies">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <nav>
+                                    <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                                        <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true"><b>Categories</b></a>
+                                        <!--<a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false"><b>Third party sites</b></a>
+                                        <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false"><b>Shared cookies</b></a>-->
+                                    </div>
+                                </nav>
+                                <div class="tab-content" id="nav-tabContent">
+                                    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                                      <canvas id="chartCat"></canvas>
+                                    </div>
+                                    <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+																			<div class="container" id="containerShared">
+
+																			</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </main>
+
+
+</body>
+</html>

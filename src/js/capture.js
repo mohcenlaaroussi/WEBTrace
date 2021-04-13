@@ -2,6 +2,7 @@ const urlMetadata = require('url-metadata');
 var category = [];
 var prevTab = null;
 var isAllowed = false;
+var xhrpackets;
 var cookies_db;
 
 function init(){
@@ -12,7 +13,7 @@ function init(){
 
 
 async function getCSV(){
-	const fileUrl = chrome.runtime.getURL("libs/open-cookie-database.csv");
+	const fileUrl = chrome.runtime.getURL("libs/Open-Cookie-Database/open-cookie-database.csv");
 	fetch(fileUrl)
 	.then(response => response.text())
 	.then(async function(text){
@@ -173,6 +174,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
 	);*/
 	chrome.webRequest.onBeforeRequest.addListener(
     async function(details) {
+				let urlIn = new URL(details.initiator);
         if(details.method == "POST"){
         // Use this to decode the body of your post
 				if(details.requestBody){
@@ -189,9 +191,6 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
 
 						}
 					}
-					//console.log(postedString);
-
-						//var json = JSON.parse(postedString);
 						var obj;
 						var json = false;
 						try {
@@ -204,23 +203,63 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
 							obj = postedString;
 
 						}
-						console.log('contenuto');
-           console.log(obj);
-					 if(obj){
-						 let web;
-						 let urlIn = new URL(details.initiator);
-						 let notPresent = await isNotPresent(urlIn.hostname);
+
+					 if(urlIn.hostname){
+
+						 console.log('contenuto');
+						 console.log(obj);
+						 var web = await getWebsite(urlIn.hostname);
+					 let notPresent = await isNotPresent(urlIn.hostname);
+					 if(!notPresent){
+						 if(!('nPackets' in web)){
+							 web['nPackets'] = 0;
+						 }
+							 web['nPackets']++;
+					 }
+						 const size = new TextEncoder().encode(JSON.stringify(obj)).length;
+						 const kiloBytes = size / 1024;
+						 let urlDest = new URL(details.url);
+						 //notPresent = await isNotPresent(urlIn.hostname);
 						 if(!notPresent){
-							 web = await getWebsite(urlIn.hostname);
+							 console.log('fdsf');
+							 console.log(urlIn.hostname);
+
 							if(!('xhrPackets' in web)){
 								web['xhrPackets'] = [];
+								xhrpackets = {};
+
 							}
-							if(typeof obj == 'object' || typeof obj == 'array')
+							if(!('sizePackets' in web)){
+								web['sizePackets'] = kiloBytes;
+							}
+							web['sizePackets'] += kiloBytes;
+							/*if(!(web['xhrPackets'].includes(urlDest.hostname))){
+								web['xhrPackets'].push(urlDest.hostname);
+							}*/
+							if (!xhrpackets.hasOwnProperty(urlDest.hostname)) {
+								xhrpackets[urlDest.hostname] = 0;
+							}
+							xhrpackets[urlDest.hostname]++;
+							var sortable = [];
+							for (var xhr in xhrpackets) {
+    						sortable.push([xhr, xhrpackets[xhr]]);
+							}
+							sortable.sort(function(a, b) {
+    						return b[1] - a[1];
+							});
+
+							web['xhrPackets'] = sortable;
+
+							await updateDb(urlIn.hostname,web);
+
+							/*if(typeof obj == 'object' || typeof obj == 'array')
 							 	web['xhrPackets'].push(obj);
-								await updateDb(urlIn.hostname,web);
+								await updateDb(urlIn.hostname,web);*/
 						 	}
 						 console.log('non vuoto');
+
 					 }
+
 				 }
 			 }
     },
@@ -420,12 +459,16 @@ async function getCategory(baseUrl){
 		var xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = async function() {
 				var dati = null;
+				console.log('CATEGORIEAAAAAAAAA');
+				console.log(this.readyState);
+				console.log(this.status);
 				if (this.readyState == 4 && this.status == 200) {
 					var ris = this.responseText;
 					var obj = JSON.parse(ris);
 					var categories = obj.data[0];
 					var i = 0;
 					console.log(obj);
+
 					for(var cat of categories.categories){
 						if(cat.score>=0.1)
 							await setCategory(cat);
@@ -438,6 +481,7 @@ async function getCategory(baseUrl){
 			var url_encoded = window.btoa(baseUrl)
 			xhttp.open("GET", "https://api.webshrinker.com/categories/v3/<"+url_encoded+">", true);
 			xhttp.setRequestHeader("Authorization",'Basic '+ encoded_key);
+			xhttp.send();
 		return;
 }
 
@@ -446,10 +490,8 @@ async function setFirstPartyToStore(tab,cookies){
 	let urlTab = new URL(tab.url);
 	let urlIcon = tab.favIconUrl;
 	var baseUrl = await getBaseUrl(tab.url);
-		urlMetadata(baseUrl).then(
-			async function (metadata) { // success handler
-				let newDate = new Date(Date.now());
-					await getCategory(baseUrl);
+	let newDate = new Date(Date.now());
+	await getCategory(baseUrl);
 			if(urlTab.hostname){
 				party = {
 					"hostname": urlTab.hostname,
@@ -461,10 +503,6 @@ async function setFirstPartyToStore(tab,cookies){
 				};
 				await storeParty(party.hostname,party);
 			}
-			},
-			function (error) { // failure handler
-				console.log(error)
-			});
 	prevTab = tab;
 	category = [];
 	obj = [];

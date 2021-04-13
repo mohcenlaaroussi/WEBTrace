@@ -6,14 +6,27 @@ let imgs = [];
 let dragged;
 let loaded;
 let click = true;
+var easing = 0.2;
 
 function setup() {
+	var canvasDiv = document.getElementById("graph");
+
 	//if(startSetup){
-	createCanvas(windowWidth, windowHeight);
+	//var width = canvasDiv.offsetWidth;
+	//var height = canvasDiv.offsetHeight;
+	let render = createCanvas(windowWidth-50, windowHeight-80);
+	render.parent('graph');
+	render.style('border-radius', '10px');
+	//var canvas = createCanvas(windowWidth, windowHeight);
+	//canvas.parent('graph');
+
 	let loading = false;
 	let loaded = false;
 }
 
+function windowResized() {
+  resizeCanvas(windowWidth-50, windowHeight-80);
+}
 
 async function getImages(nodes){
 	var app = [];
@@ -115,7 +128,7 @@ async function initSketch(nodes, links,website = false){
 	startSetup = true;
 }
 function draw() {
-	background(100);
+	background('#343A40');
 	//dragged = false;
 	//console.log('nodes: ');
 	//console.log(cells);
@@ -131,10 +144,13 @@ function draw() {
 			if(cell.isInside(mouseX, mouseY)){
 				connections.forEach(conn => {
 						if (conn.cell1.website.hostname == cell.website.hostname || conn.cell2.website.hostname == cell.website.hostname){
-							 conn.flags.hover = true;
-							 prova.push(conn);
+							//console.log('entrato');
+							//console.log(conn);
+							conn.set_flag_hover(true);
+							 //conn.flags.hover = true;
+							 conn.render();
+
 						} else{ conn.flags.hover = false;}
-							conn.render();
 				});
 			}
 	  })
@@ -180,9 +196,14 @@ function mouseClicked(){
     if (cell.flags.hover) {
     	if(clickedImg){
     		cell.open();
-   		}
+   		}else{
+			}
     }
   }
+	/*if(!$('#myModal').hasClass('in')){
+		cell.close();
+
+	}*/
 }
 
 
@@ -219,6 +240,9 @@ function mousePressed() {
 function mouseDragged() {
   if (!dragged_cell) return;
 
+
+	//var diffX = (mouseX - dx) - dragged_cell.x;
+	//var diffY =  (mousey-dy) - dragged_cell.Y;
   dragged_cell.x = mouseX - dx;
   dragged_cell.y = mouseY - dy;
 

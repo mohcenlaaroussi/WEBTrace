@@ -1,7 +1,10 @@
-
 chrome.runtime.onMessage.addListener(update);
 
+var isLink;
+
+
 async function init(){
+	isLink = [];
 	var websites = {};
 	var app = await getWebsitesDb();
 	for(let web in app)
@@ -28,8 +31,11 @@ async function getNodesLinks(websites){
 	var cookiesFirstParty;
 	var cookiesThirdParty;
 	var partyCookies;
+	var partiesVisited = [];
  	var site = [];
+	var filteredCookies;
 	var flag = false;
+	isLink = [];
 	for(let website in websites){
 			console.log('SITI');
 			console.log(websites);
@@ -48,70 +54,156 @@ async function getNodesLinks(websites){
 			for(let g of site.cookiesFirstParty){
 				cookiesFirstParty.push(g);
 			}
-
-			for(let g of site.thirdPartySites){
-				cookiesThirdParty.push(g);
+			if(site.thirdPartySites){
+				for(let g of site.thirdPartySites){
+					cookiesThirdParty.push(g);
+				}
 			}
-
+			let url = site.hostname.split(/\./).slice(-2).join('.');
 			let obj = {
 				"hostname": site.hostname,
-				"domain" : site.hostname,
+				"firstParty": site.hostname,
+				"domain" : url,
 				"cookies": cookiesFirstParty
 			};
-			cookiesParty.push(...cookiesThirdParty.slice());
+			var present = false;
 			cookiesParty.push(obj);
+
+			cookiesParty.push(...cookiesThirdParty.slice());
+			/*cookiesParty.forEach((element) => {
+				if(element.domain == obj.domain)
+					present = true;
+			});*/
+			//if(!present)
 
 	    //let thirdParties = site.thirdPartySites;
 	    if (cookiesParty){
-
+				partiesVisited = [];
 	    	for(let party of cookiesParty){
+					console.log('PARTY:  ');
+					console.log(party);
 	    		//for(let i=0; i<site.thirdPartySites.length; i++)
 					partyCookies = party.cookies.slice();
-	    		if(party.cookies.length>0){
-	    			party.cookies.slice().forEach(element => {element.firstParty = website;}); //DA TROVARE MODO PIù EFFICIENTE
-	    			if(!thirdPartiesWithCookies.has(party.hostname)){
-	    				thirdPartiesWithCookies.set(party.hostname,party.cookies.slice()); //TODO: CONSIDERARE CASO NEL QUALE COOKIE VENGONO AGGIUNTI DOPO (ES. DOPO AVER ACCETTARO LE POLICY)
+	    		if(partyCookies.length>0){
+	    			partyCookies .forEach(element => {element.firstParty = website;}); //DA TROVARE MODO PIù EFFICIENTE
+						url = party.hostname.split(/\./).slice(-2).join('.');
+
+	    			if(!thirdPartiesWithCookies.has(url)){
+							let app = (party.cookies.slice()) ? party.cookies.slice() : [];
+
+	    				thirdPartiesWithCookies.set(url,app); //TODO: CONSIDERARE CASO NEL QUALE COOKIE VENGONO AGGIUNTI DOPO (ES. DOPO AVER ACCETTARO LE POLICY)
 	    			}else{
-	    				let cookies = thirdPartiesWithCookies.get(party.hostname);
+							partiesVisited.push(url);
+							console.log(partiesVisited);
+							let count = partiesVisited.filter(item => item == url).length;
+							console.log('prendiii');
+							console.log(url);
+	    				let cookies = thirdPartiesWithCookies.get(url);
 							var current1;
 							var current2;
 							flag = false;
 	    				let isPresent = party.cookies.slice();
-	    				const isLink = cookies.map((element) => {
+							var unique;
+							var uniq = [];
+							var objLinkUnique = {};
+
+							unique = true;
+
+							for(let element of cookies){
+	    				//const isLink = cookies.map((element) => {
 								flag = false;
 	    					//for(let cookie of thirdParty.cookies){
-	    					for(let i = 0; i<party.cookies.slice().length; i++){
-	    						let cookie = party.cookies.slice()[i];
+								//console.log('cookies');
+								//console.log(cookies);
+								//if(party.firstParty == site.hostname)
+								partyCookies = partyCookies.filter((item) => (item.name !== element.name && item.domain == element.domain &&  item.firstParty == element.firstParty) || (item.firstParty !== element.firstParty));
+								let cookiesParty = party.cookies.slice();
+								console.log('ooo');
+								console.log(partyCookies.length);
+								console.log(cookiesParty.length);
+								/*if(partyCookies.length >0){
+									console.log('DENTRO');
+									cookiesParty = partyCookies;
+								}*/
+								console.log('party.hostname: '+party.hostname);
+								console.log('site.hostname: '+site.hostname);
+								if(partyCookies.slice().length <= cookiesParty.length && count < 2){
+									console.log('SSSS');
+	    					for(let i = 0; i<partyCookies.length; i++){
+	    						let cookie = partyCookies[i];
+									//console.log(party.cookies.slice());
+									//console.log(cookie);
+									//console.log(element);
+									objLinkUnique = {};
+
 		    						if(cookie.name == element.name && cookie.path == element.path && cookie.domain == element.domain && cookie.firstParty != element.firstParty){
-		    							isPresent.splice(i,1);
+											console.log('lunghezza');
+											console.log(partyCookies);
+											console.log(partyCookies);
+
+											isPresent.splice(i,1);
 											flag = true;
+												if(unique){
+													unique = false;
+												objLinkUnique =  {
+													'website1' : cookie.firstParty,
+													'website2' : element.firstParty
+												};
+												let clone = {...objLinkUnique};
+												console.log('COLLEGATO'+objLinkUnique);
+												console.log(objLinkUnique);
+
+												//uniq.push(objLinkUnique);
+												console.log(links.slice());
+
+												links.push(clone);
+												console.log(links.slice());
+												//inserisci in Array
+
+											}
 											current1 = cookie.firstParty;
 											current2 = element.firstParty;
-
 		    						}
 										if(flag){
-											return {
-												//'cookie' : cookie,
+											flag = false;
+											let objLink =  {
+												'cookie' : cookie,
 												'website1' : cookie.firstParty,
 												'website2' : element.firstParty
 											};
-										}else {
-											return null;
+											isLink.push(objLink);
 										}
 								//	}
+								//break;
+
 	    					}
 
-	        			});
-	        			Array.prototype.push.apply(cookies, party.cookies.slice());
-	        			thirdPartiesWithCookies.set(party.hostname,cookies);
+}
+
+
+							}
+	        			//});
+
+
+
+
+	        			Array.prototype.push.apply(cookies, partyCookies);
+								console.log('provaa');
+								console.log(cookies);
+								console.log(thirdPartiesWithCookies);
+	        			thirdPartiesWithCookies.set(url,cookies);
+								console.log(thirdPartiesWithCookies);
 								var coll = isLink.filter(function (el) {
   								return el != null;
 								});
-								var uniq = [];
-								uniq = coll.filter(function(item, pos) {
+								/*uniq = coll.filter(function(item, pos) {
     							return coll.indexOf(item) == pos;
-								});
-	        			links.push(...coll);
+								});*/
+								console.log('vettore unique');
+								console.log(coll.slice());
+	        			//links.push(...uniq);
+								console.log(links.slice());
+
 	    			}
 	    		}
 	    	}
@@ -120,22 +212,31 @@ async function getNodesLinks(websites){
 
 
 	    nodes.push(websites[website]);
-	    links = links.filter(function (el) {
+	    links = links.slice().filter(function (el) {
   				if(el)
   					return true;
   				else
   					return false;
 		});
 		console.log('stampa FINALE');
-		console.log(links);
+		console.log(links.slice());
 		cookiesParty = [];
 
 
 	}
+		await getLinks();
 	return {
       nodes,
-      links
+      links,
+			isLink
     };
+
+}
+
+async function getLinks(){
+	console.log('stampaaaa');
+	console.log(isLink.slice());
+	return isLink.slice();
 }
 
 async function drawOnIndex(websites, website){
@@ -151,6 +252,12 @@ async function drawOnIndex(websites, website){
 }
 
 window.onload = () => {
-  init();
+	if (window.location.href.match('index.html') != null) {
+		init();
+
+ 	}else{
+	console.log('PAGINA CARICATA');
+	console.log(window.location.href);
+}
 	//getCSV();
 };
