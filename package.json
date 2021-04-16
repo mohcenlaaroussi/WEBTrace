@@ -31,6 +31,7 @@
     "bootstrap-icons": "^1.4.0",
     "browserify": "^17.0.0",
     "chart.js": "^3.0.2",
+    "d3": "^6.7.0",
     "jquery": "^3.6.0",
     "npx": "^3.0.0",
     "url-metadata": "^2.5.0"
