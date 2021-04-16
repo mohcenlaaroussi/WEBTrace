@@ -246,7 +246,8 @@ class Node {
     }
         //image(img,this.x,this.y);
   //ellipseMode(RADIUS);
-   ellipse(this.x, this.y, this.radius*1.5, this.radius*1.5);
+   let circle = ellipse(this.x, this.y, this.radius*1.5, this.radius*1.5);
+   //circle.addClass('ciao');
   }
 
   isInside(x, y) {

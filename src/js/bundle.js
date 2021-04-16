@@ -115270,6 +115270,9 @@ async function setThirdPartyToStore(tab, data, cookies){
 
 		const urlOrigin = new URL(data.initiator);
 		const urlFirstparty = new URL(tab.url);
+		// if(cookies.length>0)
+		// 	cookies.forEach(element => {element.firstParty = urlFirstparty.hostname;});
+
 		party = {
 			//"hostname": urlFirstparty.hostname,
 			"target" : urlTarget.hostname,
@@ -115336,6 +115339,9 @@ async function setFirstPartyToStore(tab,cookies){
 	var baseUrl = await getBaseUrl(tab.url);
 	let newDate = new Date(Date.now());
 	await getCategory(baseUrl);
+	// if(cookies.length>0)
+	// 	cookies.forEach(element => {element.firstParty =urlTab.hostname;});
+
 			if(urlTab.hostname){
 				party = {
 					"hostname": urlTab.hostname,
