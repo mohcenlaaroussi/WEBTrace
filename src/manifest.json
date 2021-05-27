@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "Lighthouse",
+  "name": "WebTrace",
   "version": "0.0.1",
 
   "description": "Cross browser (PETs) extension for private information tracing across websites",
@@ -11,16 +11,15 @@
 		}
 	],
 	"permissions": [
-		"<all_urls>",
+		"*://*/*",
 		"tabs",
 		"cookies",
-    	"storage",
-    	"downloads",
-    	"privacy",
-    	"webRequest",
-    	"webRequestBlocking"
+    "storage",
+    "downloads",
+    "privacy",
+    "webRequest",
+    "webRequestBlocking"
 	],
-
 
   "web_accessible_resources": [
     "../Open-Cookie-Database/*.csv"
@@ -32,4 +31,4 @@
     	"page": "background.html"
   	},
   	"content_security_policy": "script-src 'self' https://unpkg.com/dexie@latest/dist/dexie.js https://cdn.jsdelivr.net/npm/p5@1.1.9/lib/p5.js 'sha256-gQucWiMITJlEjOGCHB9FbFvyeRmdmnaoeP8pPFIAsL0='; object-src 'self'"
-}
+  }

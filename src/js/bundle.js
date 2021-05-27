@@ -114843,10 +114843,16 @@ function extend() {
 
 },{}],492:[function(require,module,exports){
 const urlMetadata = require('url-metadata');
-var category = [];
+//var category = [];
 var prevTab = null;
 var isAllowed = false;
 var xhrpackets;
+var sortable;
+var sum;
+
+var max = 0;
+var summ = 0;
+
 var cookies_db;
 
 function init(){
@@ -114887,13 +114893,12 @@ async function parseCSV(csv){
 		  }
 		}
 		if(obj){
-			//console.log(obj['Cookie / Data Key name']);
 			let key = obj['Cookie / Data Key name'];
 	  	result[key]= obj;
 		}
   }
 	cookies_db = result;
-	//csvJSON = JSON.stringify(result)
+	return;
 }
 
 
@@ -114905,12 +114910,9 @@ async function listener(){
 	var headercontent;
 	var type;
 	chrome.webRequest.onResponseStarted.addListener(function(response){
-	//console.log(response.initiator);
 	if(response.initiator){
 		var protocol = response.initiator.split(":")[0];
 		if(protocol != 'chrome' && protocol != 'chrome-extension'){
-			//console.log(response);
-			//console.log(response.url);
 			for(var header of response.responseHeaders){
 				if(header['name'] == 'content-type'){
 					content = header['value'];
@@ -114921,13 +114923,7 @@ async function listener(){
 					type = headercontent.split(';')[0];
 				}
 			}
-
-			//console.log(response.type);
-			//console.log(contentType);
-			//console.log(type);
 			if(response.type = 'xmlhttprequest' && contentType == 'application/json' && type != 'attachment' && response.method == 'GET'){ //filtro soltanto quelle di tipo XHR
-				//console.log(response);
-				//console.log('entra');
 				let urlRes = response.url;
 				let method = response.method;
 				var xhttp = new XMLHttpRequest();
@@ -114941,23 +114937,15 @@ async function listener(){
 									obj = JSON.parse(ris);
 									json = true;
 								} catch (e) {
-									//obj = ris;
 									json = false;
 								}
 								if (!json) {
 									obj = ris;
 								}
-								console.log('pacchetto in entrata: ');
-								console.log(response);
-								console.log('contenuto');
-								console.log(obj);
-								//var i = 0;
-
 						}
 							return;
 					};
 					xhttp.open(method,urlRes, true);
-					xhttp.send();
 			}
 			if(response.initiator){
 				var initiator = new URL(response.initiator);
@@ -114984,13 +114972,6 @@ urls: ["<all_urls>"]
 ["responseHeaders"]);
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
-	/*if(tab.protocol = 'chrome'){
-		isAllowed = false;
-	}else{
-		isAllowed = true;
-	}*/
-	//console.log('inizio');
-	//console.log(tab);
 	var protocol = tab.url.split(":")[0];
 	if(protocol != 'chrome' && protocol != 'chrome-extension'){
 		const eventDetails = {
@@ -115007,105 +114988,47 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
 	}
 	});
 
-	/*chrome.webRequest.onBeforeRequest.addListener(
-	    function(details)
-	    {
-					console.log('pacchetti uscenti');
-	        console.log(details);
-	    },
-	    {urls: ["<all_urls>"]},
-	    ['requestBody']
-	);*/
 	chrome.webRequest.onBeforeRequest.addListener(
     async function(details) {
-				let urlIn = new URL(details.initiator);
-        if(details.method == "POST"){
-        // Use this to decode the body of your post
-				if(details.requestBody){
-					console.log('Pacchetto in uscita: ');
-					console.log(details);
-					var postedString;
-					if(details.requestBody.raw){
-            postedString = decodeURIComponent(String.fromCharCode.apply(null, new Uint8Array(details.requestBody.raw[0].bytes)));
-					}else{
-						if(details.requestBody.formData)
-							postedString = decodeURIComponent(String.fromCharCode.apply(null, new Uint8Array(details.requestBody.formData.bytes)));
-						else {
-							postedString = decodeURIComponent(String.fromCharCode.apply(null, new Uint8Array(details.requestBody.bytes)));
-
+				if(details.initiator){
+					let urlIn = new URL(details.initiator);
+	        if(details.method == "POST"){
+					if(details.requestBody){
+						var postedString;
+						if(details.requestBody.raw){
+	            postedString = decodeURIComponent(String.fromCharCode.apply(null, new Uint8Array(encodeURI(details.requestBody.raw[0].bytes))));
+						}else{
+							if(details.requestBody.formData)
+								postedString = decodeURIComponent(String.fromCharCode.apply(null, new Uint8Array(details.requestBody.formData.bytes)));
+							else {
+								postedString = decodeURIComponent(String.fromCharCode.apply(null, new Uint8Array(details.requestBody.bytes)));
+							}
 						}
-					}
-						var obj;
-						var json = false;
-						try {
-							obj = JSON.parse(postedString);
-							json = true;
-						} catch (e) {
-							json = false;
-						}
-						if(!json){
-							obj = postedString;
+							var obj;
+							var json = false;
+							try {
+								obj = JSON.parse(postedString);
+								json = true;
+							} catch (e) {
+								json = false;
+							}
+							if(!json){
+								obj = postedString;
 
-						}
+							}
 
-					 if(urlIn.hostname){
-
-						 console.log('contenuto');
-						 console.log(obj);
-						 var web = await getWebsite(urlIn.hostname);
-					 let notPresent = await isNotPresent(urlIn.hostname);
-					 if(!notPresent){
-						 if(!('nPackets' in web)){
-							 web['nPackets'] = 0;
-						 }
-							 web['nPackets']++;
+						 if(urlIn.hostname){
+							 await setXHR(urlIn,obj,details,async function(web,hostname){
+								 if(web){
+									 await updateDb(hostname,web);
+								 }
+							 });
+							}
 					 }
-						 const size = new TextEncoder().encode(JSON.stringify(obj)).length;
-						 const kiloBytes = size / 1024;
-						 let urlDest = new URL(details.url);
-						 //notPresent = await isNotPresent(urlIn.hostname);
-						 if(!notPresent){
-							 console.log('fdsf');
-							 console.log(urlIn.hostname);
-
-							if(!('xhrPackets' in web)){
-								web['xhrPackets'] = [];
-								xhrpackets = {};
-
-							}
-							if(!('sizePackets' in web)){
-								web['sizePackets'] = kiloBytes;
-							}
-							web['sizePackets'] += kiloBytes;
-							/*if(!(web['xhrPackets'].includes(urlDest.hostname))){
-								web['xhrPackets'].push(urlDest.hostname);
-							}*/
-							if (!xhrpackets.hasOwnProperty(urlDest.hostname)) {
-								xhrpackets[urlDest.hostname] = 0;
-							}
-							xhrpackets[urlDest.hostname]++;
-							var sortable = [];
-							for (var xhr in xhrpackets) {
-    						sortable.push([xhr, xhrpackets[xhr]]);
-							}
-							sortable.sort(function(a, b) {
-    						return b[1] - a[1];
-							});
-
-							web['xhrPackets'] = sortable;
-
-							await updateDb(urlIn.hostname,web);
-
-							/*if(typeof obj == 'object' || typeof obj == 'array')
-							 	web['xhrPackets'].push(obj);
-								await updateDb(urlIn.hostname,web);*/
-						 	}
-						 console.log('non vuoto');
-
-					 }
-
 				 }
+
 			 }
+			 return;
     },
     {urls: ["<all_urls>"]},
     ["blocking", "requestBody"]
@@ -115113,20 +115036,107 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
 
 }
 
+async function setXHR(urlIn,obj,details,_callback){
+	await getWebsite(urlIn.hostname, async function(web){
+		const size = new TextEncoder().encode(JSON.stringify(obj)).length;
+		const kiloBytes = size / 1024;
+		let urlDest = new URL(details.url);
+		if(web){
+			if(web['nPackets'] == 0){
+				xhrpackets = {"app" : 0};
+				sortable = [];
+				sum = 0;
+			}else{
+				if(('xhrPackets' in web)){
+					xhrpackets = {};
+					for(let xhr of web['xhrPackets']){
+						xhrpackets[xhr[0]] = xhr[1];
+					}
+				}
+				sortable = [];
+				sum = 0;
+			}
+
+		 if(('sizePackets' in web))
+			 web['sizePackets'] += kiloBytes;
+		 if(xhrpackets){
+			 if (!(urlDest.hostname in xhrpackets)) {
+				 xhrpackets[urlDest.hostname] = 1;
+			 }else
+			 	xhrpackets[urlDest.hostname]++;
+			 for (var xhr in xhrpackets) {
+				 if(xhr != "app"){
+					 sum+= xhrpackets[xhr];
+					 sortable.push([xhr, xhrpackets[xhr]]);
+			 	}
+			 }
+			 if(('nPackets' in web))
+			 	web['nPackets'] = sum;
+			 	sortable.sort(function(a, b) {
+					return b[1] - a[1];
+			 	});
+			 if(('xhrPackets' in web)){
+				 web['xhrPackets'] = sortable.slice();
+			 }
+		 }
+		 if(web.cookiesFirstParty && web.nThirdPartyCookies && web.nPackets){
+			 let today = new Date(Date.now());
+			 var yesterday = new Date(Date.now());
+			 yesterday.setDate(today.getDate() - 1);
+			 yesterday = yesterday.toLocaleDateString();
+			 sum = web.cookiesFirstParty.length+web.nThirdPartyCookies + web.nPackets;
+			 if(web['dataShared'][yesterday] && web['dataShared'][yesterday] > 0){
+				let val = web['dataShared'][yesterday];
+				sum = sum - val;
+			 }
+
+			 if(max <= sum)
+			 	max = sum;
+
+			 let newDate = new Date(Date.now()).toLocaleDateString();
+			 if(!('dataShared' in web)){
+			 	web['dataShared'] = {};
+			 }
+
+
+			 if(!web['dataShared'][newDate]){
+			 		max = sum;
+			 }
+			 let obj = {
+			 	"sum" : sum,
+			 	"max" : max
+			 };
+			 db.websites.where('hostname').notEqual(' ').modify(function(value) {
+			 		if(value.dataShared){
+			 			value.dataShared[newDate].max=max;
+			 		}
+			 });
+
+			 web['dataShared'][newDate] = obj;
+	 		}
+		}
+
+		if(web)
+			_callback(web,urlIn.hostname);
+		else
+			_callback(null,null);
+	return;
+	});
+
+	return;
+	}
+
 async function processEvent(queue){
 	var p = await processHeader(queue);
 	return p;
 }
 
 async function processHeader(queue,ignore = false){
-	//console.log('csv-----');
-	//console.log(cookies_db);
 	var processingQueue;
 	if (processingQueue && !ignore) {
 			return;
 		}
 		if (queue.length >= 1) {
-
 			try{
 					const nextEvent = queue.shift();
 
@@ -115237,30 +115247,34 @@ async function setHeaderFirstParty(tabId, changeInfo, tab){
 
 async function setParty(event,tab){
 	var protocol = tab.url.split(":")[0];
-	if(tab.id>0 && protocol != 'chrome' && protocol != 'chrome-extension'){
+	if(tab.url && tab.id>0 && protocol != 'chrome' && protocol != 'chrome-extension'){
 		let data = event.data;
+
+		let urlTab = new URL(tab.url);
+
 		let cookies = (event.cookies) ? event.cookies : '';
+		if(cookies.length>0)
+			cookies.forEach(element => {element.firstParty = urlTab.hostname;});
+
 		let tabId = ((data.tabId) ? data.tabId : data.response.tabId);
 		var party = {};
-			let urlTab = '';
 			switch(event.type){
 				case 'thirdParty':
 					await setThirdPartyToStore(tab, data,cookies);
-
 				break;
 				case 'firstParty':
-
 					await setFirstPartyToStore(tab,cookies);
-
 				break;
 
 			}
 
 			return true;
+
+
+
 		}else {
 			return false;
 		}
-
 }
 
 async function setThirdPartyToStore(tab, data, cookies){
@@ -115270,16 +115284,13 @@ async function setThirdPartyToStore(tab, data, cookies){
 
 		const urlOrigin = new URL(data.initiator);
 		const urlFirstparty = new URL(tab.url);
-		// if(cookies.length>0)
-		// 	cookies.forEach(element => {element.firstParty = urlFirstparty.hostname;});
-
 		party = {
-			//"hostname": urlFirstparty.hostname,
 			"target" : urlTarget.hostname,
 			"origin" : urlOrigin.hostname,
 			"requestTime" : data.timeStamp,
 			"firstParty" : false,
-			"cookiesThirdParty" : (cookies.length>0) ? cookies : ''
+			"cookiesThirdParty" : (cookies.length>0) ? cookies : '',
+			'tabActive' : tab.active
 		};
 		if(urlFirstparty.hostname!=party.origin){
 			await storeParty(urlFirstparty.hostname,party);
@@ -115298,30 +115309,33 @@ async function getBaseUrl(url){
 	return url;
 }
 
-async function setCategory(obj){
-	category.push(obj);
-}
-
-async function getCategory(baseUrl){
+async function getCategory(baseUrl, _callback){
 		var xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = async function() {
 				var dati = null;
-				console.log('CATEGORIEAAAAAAAAA');
-				console.log(this.readyState);
-				console.log(this.status);
+
 				if (this.readyState == 4 && this.status == 200) {
 					var ris = this.responseText;
 					var obj = JSON.parse(ris);
-					var categories = obj.data[0];
-					var i = 0;
-					console.log(obj);
+					var categories = [];
 
-					for(var cat of categories.categories){
-						if(cat.score>=0.1)
-							await setCategory(cat);
+					let categorie = obj.data[0];
+
+					for(var cat of categorie.categories){
+						if(cat.score>=0.1){
+							categories.push(cat);
+						}
 					}
-				}
+					_callback(categories);
 					return;
+				}
+				if(this.status >= 400 & this.readyState == 4){
+					let c = [];
+					_callback(c);
+					return;
+				}
+				return;
+
 			};
 			var key = config.access_key+':'+config.secret_key;
 			var encoded_key = window.btoa(key);
@@ -115338,21 +115352,20 @@ async function setFirstPartyToStore(tab,cookies){
 	let urlIcon = tab.favIconUrl;
 	var baseUrl = await getBaseUrl(tab.url);
 	let newDate = new Date(Date.now());
-	await getCategory(baseUrl);
-	// if(cookies.length>0)
-	// 	cookies.forEach(element => {element.firstParty =urlTab.hostname;});
-
-			if(urlTab.hostname){
-				party = {
-					"hostname": urlTab.hostname,
-					"iconURL" : (urlIcon) ? urlIcon : 'chrome://favicon',
-					"firstParty" : true,
-					"requestTime" : newDate,
-					"category" : category,
-					"cookiesFirstParty" : (cookies.length>0) ? cookies : ''
-				};
-				await storeParty(party.hostname,party);
-			}
+	await getCategory(baseUrl,async function(category){
+		if(urlTab.hostname){
+			party = {
+				"hostname": urlTab.hostname,
+				"iconURL" : (urlIcon) ? urlIcon : 'chrome://favicon',
+				"firstParty" : true,
+				"requestTime" : newDate,
+				"category" : category,
+				"cookiesFirstParty" : (cookies.length>0) ? cookies : '',
+				'tabActive' : tab.active
+			};
+			await storeParty(party.hostname,party);
+		}
+	});
 	prevTab = tab;
 	category = [];
 	obj = [];

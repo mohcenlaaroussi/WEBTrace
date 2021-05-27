@@ -7,44 +7,90 @@
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/chart.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/p5@1.1.9/lib/p5.js"></script>
+	<!-- <script src="https://cdn.jsdelivr.net/npm/p5@1.1.9/lib/p5.js"></script> -->
 	<script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
 	<script src="js/store.js"></script>
 	<script src="js/main.js"></script>
 	<script src="js/node.js"></script>
 	<script src="js/link.js"></script>
+	<!-- <script src="libs/d3v3.js"></script> -->
+	<script src="js/d3.min.js"></script>
+
   <script src="js/sketch.js"></script>
 
 
 </head>
-<body class="text-center vsc-initialized">
+<body class="vsc-initialized">
 
-	<div class="navbar navbar-expand-md navbar-dark bg-dark fixed-top justify-content-md-center">
+	<!-- <div class="navbar navbar-expand-md navbar-dark bg-dark fixed-top justify-content-md-center">
 		<header class="masthead mb-auto">
 		        <div class="inner">
 		          <h3 class="masthead-brand">Cover</h3>
 		          <nav class="nav nav-masthead justify-content-center">
 		            <a class="nav-link active" href="index.html">Home</a>
-		            <a class="nav-link" href="prova.html">Features</a>
+		            <a class="nav-link" href="dashboard.html">Features</a>
 		          </nav>
 		        </div>
 		      </header>
-			</div>
+			</div> -->
 
 <!--#include file="include_head.html" -->
-			<div class="" id="graph">
+			<!-- <div class="" id="graph">
+			</div> -->
+			<!-- <svg width="960" height="600" id="visualization"></svg> -->
+
+
+
+			<div class="site-wrap">
+
+				<nav class="site-nav">
+
+					<div class="name">
+						<!-- Peppe -->
+						<h2><b>WEB</b>trace</h2>
+
+
+
+						<!-- <svg width="24" height="24" viewBox="0 0 24 24">
+							<path d="M11.5,22C11.64,22 11.77,22 11.9,21.96C12.55,21.82 13.09,21.38 13.34,20.78C13.44,20.54 13.5,20.27 13.5,20H9.5A2,2 0 0,0 11.5,22M18,10.5C18,7.43 15.86,4.86 13,4.18V3.5A1.5,1.5 0 0,0 11.5,2A1.5,1.5 0 0,0 10,3.5V4.18C7.13,4.86 5,7.43 5,10.5V16L3,18V19H20V18L18,16M19.97,10H21.97C21.82,6.79 20.24,3.97 17.85,2.15L16.42,3.58C18.46,5 19.82,7.35 19.97,10M6.58,3.58L5.15,2.15C2.76,3.97 1.18,6.79 1,10H3C3.18,7.35 4.54,5 6.58,3.58Z"></path>
+						</svg> -->
+						<svg width="24" height="24" id="restart" fill="currentColor" title="Reset extension" class="bi bi-bootstrap-reboot" viewBox="0 0 16 16">
+							<title>Restart</title>
+						  <path d="M1.161 8a6.84 6.84 0 1 0 6.842-6.84.58.58 0 1 1 0-1.16 8 8 0 1 1-6.556 3.412l-.663-.577a.58.58 0 0 1 .227-.997l2.52-.69a.58.58 0 0 1 .728.633l-.332 2.592a.58.58 0 0 1-.956.364l-.643-.56A6.812 6.812 0 0 0 1.16 8z"/>
+						  <path d="M6.641 11.671V8.843h1.57l1.498 2.828h1.314L9.377 8.665c.897-.3 1.427-1.106 1.427-2.1 0-1.37-.943-2.246-2.456-2.246H5.5v7.352h1.141zm0-3.75V5.277h1.57c.881 0 1.416.499 1.416 1.32 0 .84-.504 1.324-1.386 1.324h-1.6z"/>
+						</svg>
+
+						<hr>
+					</div>
+
+					<ul>
+						<li class="active"><a href="index.html">Home</a></li>
+						<li><a href="dashboard.html">Dashboard</a></li>
+
+				</nav>
+
+				<main>
+					<svg class="prova" width="1200" height="680" id="visualization"></svg>
+
+				</main>
+
 			</div>
+
 
 				<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
 				  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
 				    <div class="modal-content">
 				      <div class="modal-header">
-				        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-				        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<!-- <div class="content-header"> -->
+				        <h5 class="modal-title" id="exampleModalLongTitle"></h5>
+				        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 				          <span aria-hidden="true">&times;</span>
-				        </button>
-				      </div>
-				      <div class="modal-body">
+				        </button> -->
+								<hr>
+							</div>
+
+				      <!-- </div> -->
+				      <div class="modal-body" id="modalBody">
 								<!--<table id="sumTable" class="table table-striped">
 									<thead class="">
 											<tr>
@@ -57,7 +103,7 @@
 										<tr>
 											<td></td><td></td><td></td><td></td>
 										</tr>
-										<!--<tr>
+										<tr>
 											<<td></td><td></td><td></td><td></td>
 										</tr>-->
 										<!--<tr>
@@ -66,168 +112,105 @@
 											</td>
 										</tr>
 								</table>-->
-								<div class="row">
+										<svg class="prova2" width="735" height="370" id="visualizationNode"></svg>
+										<div class="sumarize">
+											<div class="sum_title">
+												First party cookies
+												<div class="h5" id="FirstCookies"></div>
 
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-success shadow h-100 py-2" style="border-left: 0.25rem solid #343A40">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-uppercase mb-1">
-                                                First party cookies</div><hr>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="FirstCookies">$40,000</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-success shadow h-100 py-2" style="border-left: 0.25rem solid #343A40">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-uppercase mb-1">
-                                                Third party cookies</div><hr>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="ThirdCookies">$215,000</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-info shadow h-100 py-2" style="border-left: 0.25rem solid #343A40">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-																			<div class="col mr-2">
-																					<div class="text-xs font-weight-bold text-uppercase mb-1">
-																							Size of XHR packets</div><hr>
-																					<div class="h5 mb-0 font-weight-bold text-gray-800" id="sizeXHR">$215,000</div>
-																			</div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Pending Requests Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-warning shadow h-100 py-2" style="border-left: 0.25rem solid #343A40">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-uppercase mb-1">
-                                                Number of XHR packets</div><hr>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="numberXHR">18</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-comments fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-								<div class="container">
-
-								  <div class="row justify-content-center" style="padding:5px;">
-								    <!--<div class="col-sm" id="fhjd">
-											<div class="row">
-												<span style="text-transform:uppercase; padding:10px;text-align:center;"><b>Top cookies domains</b></span>
 											</div>
-								    </div>-->
-										<div class="col-sm-6">
-											<div class="card border-left-success shadow h-360 py-2 top3" style="border-left: 0.25rem solid #343A40">
-												<div class="card-body">
-													<h5 class="card-title">Top cookies domains</h5><hr>
-													<!--<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-													<a href="#" class="btn btn-primary">Go somewhere</a>-->
-													<table id="top3cookies" class="">
-														<thead class="thead-dark">
+											<div class="sum_title">
+												Third party cookies
+												<div class="h5" id="ThirdCookies"></div>
 
-														<tr>
-															<th>Domain</th>
-															<th>Cookies</th>
-														</tr>
-														</thead>
-														<tr>
-															<td></td><td></td>
-														</tr>
-														<tr>
-															<td></td><td></td>
-														</tr>
-														<tr>
-															<td></td><td></td>
-														</tr>
-													</table>
+
+											</div>
+											<div class="sum_title">
+												Size of XHR packets
+												<div class="h5" id="sizeXHR"></div>
+
+
+											</div>
+											<div class="sum_title">
+												Number of XHR packets
+												<div class="h5 " id="numberXHR">18</div>
+
+
+											</div>
+										</div>
+                        <!-- Earnings (Monthly) Card Example -->
+
+										<div class="parent">
+										  <div class="col">
+												<!-- <div class="nav-tabs sum-tab" id="nav-tabs"> -->
+													<!-- <div class="col-tab"> -->
+														<div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+																<!-- <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true"><b>Cookies</b></a> -->
+																<!-- <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false"><b>XHR</b></a> -->
+																<!-- <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false"><b>Shared cookies</b></a> -->
+																<a id="nav-profile-tab" data-toggle="tab" href="#nav-cookies" role="tab" aria-controls="nav-cookies" aria-selected="true" class="link-tab active">Cookies</a>
+																<a id="nav-contact-tab" data-toggle="tab" href="#nav-xhr" role="tab" aria-controls="nav-xhr" aria-selected="false" class="link-tab">XHR</a>
+														</div>
+												<!-- </div> -->
+
+
+
+												<!-- </div> -->
+												<div class="tab-content" id="nav-tabContent">
+														<div class="tab-pane fade show active" id="nav-cookies" role="tabpanel" aria-labelledby="nav-home-tab">
+															<h5 class="card-title">Top cookies domains</h5><hr>
+															<!--<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+															<a href="#" class="btn btn-primary">Go somewhere</a>-->
+															<table id="top3cookies" class="">
+																<thead class="thead-dark">
+
+																<tr>
+																	<th>Domain</th>
+																	<th>Cookies</th>
+																</tr>
+																</thead>
+																<tr>
+																	<td></td><td></td>
+																</tr>
+																<tr>
+																	<td></td><td></td>
+																</tr>
+																<tr>
+																	<td></td><td></td>
+																</tr>
+															</table>
+														</div>
+														<div class="tab-pane fade" id="nav-xhr" role="tabpanel" aria-labelledby="nav-profile-tab">
+															<h5 class="card-title">Top XHR domains</h5><hr>
+															<!--<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+															<a href="#" class="btn btn-primary">Go somewhere</a>-->
+															<table id="top3xhr" class="">
+																<thead class="thead-dark">
+
+																<tr>
+																	<th>Domain</th>
+																	<th>Packets</th>
+																</tr>
+															</thead>
+
+																<tr>
+																	<td></td><td></td>
+																</tr>
+																<tr>
+																	<td></td><td></td>
+																</tr>
+																<tr>
+																	<td></td><td></td>
+																</tr>
+															</table>
+														</div>
 												</div>
 											</div>
-										</div>
-										<div class="col-sm-6">
-											<div class="card border-left-success shadow h-360 py-2 top3" style="border-left: 0.25rem solid #343A40">
-												<div class="card-body">
-													<h5 class="card-title">Top XHR domains</h5><hr>
-													<!--<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-													<a href="#" class="btn btn-primary">Go somewhere</a>-->
-													<table id="top3xhr" class="">
-														<thead class="thead-dark">
-
-														<tr>
-															<th>Domain</th>
-															<th>Packets</th>
-														</tr>
-													</thead>
-
-														<tr>
-															<td></td><td></td>
-														</tr>
-														<tr>
-															<td></td><td></td>
-														</tr>
-														<tr>
-															<td></td><td></td>
-														</tr>
-													</table>
-												</div>
-											</div>
-										</div>
-								    <!--<div class="col-sm">
-											<div class="row">
-												<span style="text-transform:uppercase; padding:10px;text-align:center;"><b>Top XHR domains</b></span>
+										  <div class="col" id="chartPie">
+												<canvas id="myChart"></canvas>
 
 											</div>
-
-								    </div>-->
-
-								  </div>
-									<div class="row">
-									<div class="col-xs-12" id="chartPie" style="height:400px; width:400px; margin:0 auto">
-										<canvas id="myChart"></canvas>
-
-									</div>
-									<!--<div class="col-md">
-
-									</div>-->
-								</div>
-									<div class="row">
-										<div class="col">
 										</div>
-
-									</div>
-								</div>
 				      </div>
 				      <div class="modal-footer">
 

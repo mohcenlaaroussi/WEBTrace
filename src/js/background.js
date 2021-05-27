@@ -5,7 +5,6 @@ chrome.browserAction.onClicked.addListener(apri);
 async function apri() {
     var finestre = [];
     var boolean;
-    //console.log(fullUrl);
     let prova = await chrome.tabs.query({}, function(tabb){
         let pos = 0;
         const fullUrl = chrome.extension.getURL('index.html');
