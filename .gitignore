@@ -1,1 +1,10 @@
 *.DS_Store
+node_modules
+package-lock.json
+config.js
+src.crx
+src.pem
+src/sass
+src/background
+src/js/bundle.js
+libs

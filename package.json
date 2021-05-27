@@ -1,8 +1,39 @@
 {
-  "devDependencies": {
-    "mocha": "^8.2.1"
-  },
+  "name": "Lighthouse",
+  "version": "1.0.0",
+  "description": "cookie tracing",
+  "main": "background.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "build": "npm run updatesubmodule && browserify src/js/capture.js -o src/js/bundle.js && npm run createlib",
+    "updatesubmodule": "git submodule init && git submodule update",
+    "createlib": "cd src && rd /s /q libs && md libs && npm run movelibcontents",
+    "movelibcontents": "npx copyfiles Open-Cookie-Database/open-cookie-database.csv src/libs/ && npx copyfiles --flat node_modules/bootstrap/dist/js/bootstrap.min.js src/js/ && npx copyfiles --flat node_modules/jquery/dist/jquery.min.js src/js/ && npx copyfiles --flat node_modules/chart.js/dist/chart.js src/js/ && npx copyfiles --flat node_modules/d3/dist/d3.min.js src/js/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.com/LaSER_lab/lighthouse"
+  },
+  "keywords": [
+    "web",
+    "cookies",
+    "privacy"
+  ],
+  "devDependencies": {
+    "copyfiles": "^2.4.1",
+    "dexie": "^3.0.3"
+  },
+  "bugs": {
+    "url": "https://gitlab.com/LaSER_lab/lighthouse/issues"
+  },
+  "dependencies": {
+    "bootstrap": "^4.6.0",
+    "bootstrap-icons": "^1.4.0",
+    "browserify": "^17.0.0",
+    "chart.js": "^3.0.2",
+    "d3": "^6.7.0",
+    "jquery": "^3.6.0",
+    "npx": "^3.0.0",
+    "url-metadata": "^2.5.0"
   }
 }
